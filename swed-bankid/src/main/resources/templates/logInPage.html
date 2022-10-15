@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BankId Test</title>
+    <link rel="icon" type="image/x-icon" href="/images/logoBankIdWhite.png">
+    <script type="text/javascript" async="" src="/js/logInPage.js"></script>
+    <style>
+        .item1 {
+            grid-area: header;
+        }
+
+        .item2 {
+            grid-area: left;
+        }
+
+        .item3 {
+            grid-area: main;
+        }
+
+        .item4 {
+            grid-area: right;
+        }
+
+        .item5 {
+            grid-area: footer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+            'header header header'
+            'left main right'
+            'footer footer footer';
+            gap: 1px;
+            padding: 10px;
+        }
+
+        .grid-container > div {
+            text-align: center;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .myDiv1 {
+            align-items: center;
+            min-width: 350px;
+            max-width: 350px;
+            margin: auto;
+            alignment: center;
+        }
+
+        .myDiv2 {
+            text-align: center;
+            padding: 2px;
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button1:hover {
+            box-shadow: 0 10px 10px 15px rgba(0, 0, 0, 0.30);
+        }
+    </style>
+</head>
+<body style="font-family: Helvetica, sans-serif" onload="dataSessionRequest()">
+<div class="grid-container">
+    <div class="item1" style="text-align: left">
+        <img style="horiz-align: left" src="/images/service_provider.png" alt="Service Provider" height="50">
+    </div>
+    <div class="item2"></div>
+    <div class="item3">
+        <div id="divMain" class="myDiv1">
+            <div id="div1" class="myDiv2">
+                <img id="img_div1" src="/images/logoBankIdBlue.png" alt="BankId Logo" height="100px">
+            </div>
+            <div id="div2" class="myDiv2">
+                <a id="a_div2">Start the BankID app on your phone or tablet.<br>
+                    Tap the QR code button in the app.<br>
+                    Point the camera at the QR code below.</a>
+            </div>
+            <div id="div3" class="myDiv2" style="padding: 15px;">
+                <img id="dynamicQRImg" src="/images/blankQR.png" alt="QR code" width="200" height="200">
+            </div>
+            <div id="div4" class="myDiv2">
+                <a id="launchReference" onclick="launchBankIdApp()" href="">Use BankID on this device instead</a>
+            </div>
+        </div>
+    </div>
+    <div class="item4"></div>
+    <div class="item5">
+        <p id="testLabel" style="font-size: 16px;"></p>
+    </div>
+</div>
+</body>
+</html>

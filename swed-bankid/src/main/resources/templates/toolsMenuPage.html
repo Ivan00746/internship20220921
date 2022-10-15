@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID method menu</title>
+    <link rel="icon" type="image/x-icon" href="/images/logoBankIdWhite.png">
+    <script type="text/javascript" async="" src="/js/toolMenuPage.js"></script>
+    <style>
+        .item1 {
+            grid-area: header;
+        }
+
+        .item2 {
+            grid-area: left;
+        }
+
+        .item3 {
+            grid-area: main;
+        }
+
+        .item4 {
+            grid-area: right;
+        }
+
+        .item5 {
+            grid-area: footer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+            'header header header'
+            'left main right'
+            'footer footer footer';
+            gap: 1px;
+            /*background-color: #2196F3;*/
+            padding: 10px;
+        }
+
+        .grid-container > div {
+            /*background-color: rgba(255, 255, 255, 0.8);*/
+            text-align: center;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .myDiv1 {
+            align-items: center;
+            min-width: 550px;
+            max-width: 550px;
+            margin: auto;
+            alignment: center;
+            /*border: 5px outset red;*/
+            /*background-color: lightblue;*/
+        }
+
+        .myDiv2 {
+            /*border: 3px outset blue;*/
+            /*background-color: #2196F3;*/
+            text-align: center;
+            padding: 2px;
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button1:hover {
+            box-shadow: 0 10px 10px 15px rgba(0, 0, 0, 0.30);
+        }
+    </style>
+</head>
+<body style="font-family: Helvetica, sans-serif">
+<div class="grid-container">
+    <div class="item1" style="text-align: left">
+        <img style="horiz-align: left" src="/images/service_provider.png" alt="Service Provider" height="50">
+    </div>
+    <div class="item2"></div>
+    <div class="item3">
+        <div class="myDiv1">
+            <div class="myDiv2">
+                <br><br><br>
+                <img src="/images/title_selectionOfMethod.png" alt="Selection Logo" width="400px">
+            </div>
+            <div class="myDiv2">
+                <input type="image" class="button button1" onclick="loginPageCheckOut()"
+                       src="/images/menu_item_bankid.png" alt="BankId item" height="80">
+            </div>
+            <div class="myDiv2">
+                <img src="/images/menu_item_other_id.png" alt="OtherId item" height="80">
+            </div>
+            <div class="myDiv2">
+                <img src="/images/menu_item_other_method.png" alt="Other method item" height="80">
+            </div>
+        </div>
+    </div>
+    <div class="item4"></div>
+    <div class="item5">
+        <p id="testLabel" style="font-size: 16px;"></p>
+    </div>
+</div>
+</body>
+</html>

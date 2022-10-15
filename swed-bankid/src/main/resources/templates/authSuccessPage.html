@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID method menu</title>
+    <link rel="icon" type="image/x-icon" href="/images/logoBankIdWhite.png">
+    <script type="text/javascript" async="" src="/js/authSuccessPage.js"></script>
+    <style>
+        .item1 {
+            grid-area: header;
+        }
+
+        .item2 {
+            grid-area: left;
+        }
+
+        .item3 {
+            grid-area: main;
+        }
+
+        .item4 {
+            grid-area: right;
+        }
+
+        .item5 {
+            grid-area: footer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+            'header header header'
+            'left main right'
+            'footer footer footer';
+            gap: 1px;
+            padding: 10px;
+        }
+
+        .grid-container > div {
+            text-align: center;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .myDiv1 {
+            align-items: center;
+            min-width: 550px;
+            max-width: 550px;
+            margin: auto;
+            alignment: center;
+        }
+
+        .myDiv2 {
+            text-align: center;
+            padding: 2px;
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button1:hover {
+            box-shadow: 0 10px 10px 15px rgba(0, 0, 0, 0.30);
+        }
+    </style>
+</head>
+<body style="font-family: Helvetica, sans-serif" onload="getUserData()">
+<div class="grid-container">
+    <div class="item1" style="display: flex; flex-direction: row">
+        <div style="text-align: left; width:50%; min-width: fit-content">
+            <img src="/images/service_provider.png" alt="Service Provider" height="50px">
+        </div>
+        <div style="text-align: right; width:50%; min-width: fit-content">
+            <input type="image" class="button button1" id = "logOut" onclick="logOut()"
+                   src="/images/logOut.jpg" alt="LogOut" height="50px">
+        </div>
+    </div>
+    <div class="item2"></div>
+    <div class="item3">
+        <div class="myDiv1">
+            <div id="div1" class="myDiv2">
+                <br><br><br>
+                <img src="/images/logoBankIdBlue.png" alt="BankId Logo" height="100px">
+            </div>
+            <div id="div2" class="myDiv2">
+                <p id="p_div2" style="font-size: 20px; font-weight: bold;"></p>
+            </div>
+            <div id="div3" class="myDiv2">
+                <p id="p_div3" style="font-size: 16px;"></p>
+            </div>
+            <div id="div4" class="myDiv2">
+            </div>
+        </div>
+    </div>
+    <div class="item4"></div>
+    <div class="item5">
+        <p id="testLabel" style="font-size: 16px;"></p>
+    </div>
+</div>
+</body>
+</html>

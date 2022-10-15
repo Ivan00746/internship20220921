@@ -1,0 +1,314 @@
+{
+  "browserCheckResult": {
+    "browser": "Chrome",
+    "browserMode": "",
+    "browserVersion": "105.0.0.0",
+    "isMobile": false,
+    "os": "Windows 10",
+    "platform": "Windows 64-bit",
+    "result": true,
+    "resultLevel": "OS"
+  },
+  "language": {
+    "all": [
+      "eng"
+    ],
+    "current": "eng",
+    "text": {
+      "application": {
+        "title": "Demo Bank"
+      },
+      "common": {
+        "buttons": {
+          "close": "Close",
+          "issue": "Issue",
+          "login": "Log in",
+          "menu": "Menu",
+          "sign": "Sign"
+        },
+        "form": {
+          "email": {
+            "name": "E-mail address",
+            "validation": {
+              "invalid": "Enter a valid E-mail address",
+              "required": "Enter your E-mail address"
+            }
+          },
+          "firstname": {
+            "name": "First name",
+            "validation": {
+              "invalid": "Your name contains invalid characters",
+              "required": "Enter your first name",
+              "tooLong": "Enter a name shorter than 32 characters"
+            }
+          },
+          "lastname": {
+            "name": "Last name",
+            "validation": {
+              "invalid": "Your last name contains invalid characters",
+              "required": "Enter your last name",
+              "tooLong": "Enter a name shorter than 33 characters"
+            }
+          },
+          "onedayvalidity": "Use one-day validity time",
+          "optional": "optional",
+          "organization": {
+            "name": "Organization",
+            "validation": {
+              "invalid": "Your organization name contains invalid characters",
+              "required": "Enter your organization name",
+              "tooLong": "Enter an organization name shorter than 26 characters",
+              "tooShort": "Enter an organization name longer than 4 characters"
+            }
+          },
+          "personalnumber": {
+            "name": "Personal number",
+            "validation": {
+              "invalid": "Incorrect personal number format (YYYYMMDDNNNN) or checksum",
+              "required": "Enter a personal number"
+            }
+          },
+          "project": {
+            "name": "Project"
+          }
+        },
+        "links": {
+          "login": "Log in",
+          "logout": "Log out",
+          "sign": "Sign"
+        }
+      },
+      "cookieBanner.body": "This website uses cookies. By continuing you accept the use of cookies.",
+      "cookieBanner.linkText": "More",
+      "errors": {
+        "orderfailed": "Your test BankID could not be issued, please try again later.",
+        "servererror": "Internal error, try again later."
+      },
+      "footer": {
+        "cookies": "Cookies",
+        "integrity": "Privacy policy"
+      },
+      "header": {
+        "home": "Home",
+        "loggedinas": "Logged in as"
+      },
+      "htmlLang": "en",
+      "locale": "en-EN",
+      "pages": {
+        "authenticate": {
+          "failed": {
+            "buttons": {
+              "cancel": "Cancel",
+              "tryAgain": "Try again"
+            },
+            "header": "The login failed",
+            "reason": ""
+          },
+          "link": {
+            "bisa": {
+              "base": "https://app.bankid.com/?autostarttoken={autoStartToken}\u0026redirect=",
+              "base|AndroidPre6": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=",
+              "base|IOSPre9": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=",
+              "redirect": "null",
+              "redirect|IOS": "[BASEURL]/logintest#ref={orderRef}",
+              "redirect|IOSPre9": "[BASEURL]/logintest#ref={orderRef}",
+              "redirect|Windows Phone": "[BASEURL]/logintest#ref={orderRef}"
+            },
+            "bisp": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=null"
+          },
+          "mobile": {
+            "startapp": "Start your BankID app"
+          },
+          "phonefocus": {
+            "altText": "Wait!",
+            "paragraph": "Type your security code in the BankID app and select Identify."
+          },
+          "prod": {
+            "title": "Log in with Production BankID"
+          },
+          "qrcode": {
+            "paragraph": {
+              "desktop": "Start the BankID app and press the Scan QR button. Then scan the QR code above.",
+              "mobile": "If your BankID resides on a different mobile device, scan the QR code below with the your device."
+            }
+          },
+          "test": {
+            "title": "Log in with Test BankID"
+          }
+        },
+        "codesent": {
+          "buttons": {
+            "back": "Back to login page"
+          },
+          "paragraph": "Your code has been sent to the email address you entered.",
+          "title": "Thank you for your order!"
+        },
+        "guides": {
+          "configure": {
+            "header": "Configuration",
+            "text": "How to configure your client for BankID test."
+          },
+          "howto": {
+            "header": "Get a test BankID",
+            "text": "Follow this guide to get your test BankID. We recommend using a test device to avoid problems with your production BankID."
+          },
+          "subtitle": "Useful guides",
+          "text": "Get a test BankID to use for development or testing of services using BankID. You can also use it for testing functionality such as signing with BankID.",
+          "title": "Guides",
+          "viewguide": "Open the guide"
+        },
+        "home": {
+          "issue": {
+            "links": {
+              "issuefile": "BankID on file",
+              "issuemobile": "Mobile BankID"
+            },
+            "paragraph": "You can issue Mobile BankIDs and BankIDs on file, for test purposes. You decide names and\npersonal numbers for your test BankIDs.",
+            "title": "Issue BankID for test"
+          },
+          "showandblock": {
+            "buttons": {
+              "showblock": "Next"
+            },
+            "error": "An error occurred, please check the entered personal number or try again later.",
+            "form": {
+              "enterpersonalnumber": "Personal number"
+            },
+            "paragraph": "Enter the personal number of the test BankID you wish to show and/or block. A new page will open.",
+            "title": "Show and block"
+          },
+          "testsign": {
+            "disabled": "Sign function only available when logged in with BankID.",
+            "paragraph": "Test the sign function for a text of your choice, using the BankID you are logged in with. To use sign, you need to be logged in with a test- or production BankID.",
+            "title": "Sign"
+          }
+        },
+        "issuefile": {
+          "paragraph1": "Enter a name and personal number for your test BankID on file.",
+          "title": "BankID on file"
+        },
+        "issuemobile": {
+          "paragraph1": "Enter a name and personal number for your test Mobile BankID.",
+          "title": "Mobile BankID"
+        },
+        "issuepages": {
+          "backlink": "Issue BankID for test",
+          "note": "Note!",
+          "paragraph2.linktext": "configure the BankID security app",
+          "paragraph2.part1": "To issue a test BankID you need to",
+          "paragraph2.part2": "to work with the test system."
+        },
+        "login": {
+          "altSameDevice": "Alternative: Start BankID Security Application on this device.",
+          "buttons": {
+            "personalcode": "Personal code",
+            "production": "Production BankID",
+            "test": "Test BankID"
+          },
+          "title": "Select your login method"
+        },
+        "logincode": {
+          "buttons": {
+            "ordercode": "Order personal code"
+          },
+          "form": {
+            "entercode": "Enter code",
+            "invalid": "Invalid code format",
+            "orderNewCode": "Invalid code, please order a new code",
+            "required": "Enter your login code"
+          },
+          "needcode": {
+            "header": "Need a code?",
+            "text": "If you don’t have a production- or test BankID, a personal code can be used. Order one below and receive it via email. Enter it above and click log in."
+          },
+          "note": "Note:",
+          "oldcodes": {
+            "header": "Regarding old codes",
+            "text": "Old codes no longer supported, you need to order new codes or select another login method."
+          },
+          "paragraph1": "If you have neither a test or production BankID, you can order a personal login-code to your mail address. Then enter the code and click Log in above.",
+          "paragraph2": "you can reuse your personal code as many times as you like for a period of 30 days, so there is no need to order a new code for each personal number you want to issue a test BankID for.",
+          "reusecode": {
+            "header": "Reuse the code",
+            "text": "Your code is valid with unlimited use for 30 days. You don’t need separate codes for different test BankIDs."
+          },
+          "title": "Log in with your personal code"
+        },
+        "notfound": {
+          "backlink": "To start page",
+          "paragraph": "We are sorry to say we can't find the page you are looking for.",
+          "title": "Page not found"
+        },
+        "ordercode": {
+          "backlink": "Login with personal code",
+          "blockedDomain": "We don't support anonymous email services like mailinator. Please use an actual email address!",
+          "buttons": {
+            "ordercode": "Order code"
+          },
+          "isGmailHotmail": "Customers have reported problems with receiving our activation mails using Gmail and Hotmail. Choose another email address!",
+          "paragraph1": "Enter your details to order a personal code. The code will be sent to the email address you enter.",
+          "reusecode": {
+            "header": "Reuse the code",
+            "text": "Your code is valid with unlimited use for 30 days. You don’t need separate codes for different test BankIDs."
+          },
+          "title": "Order personal code"
+        },
+        "sign": {
+          "complete": {
+            "header": "Sign successful"
+          },
+          "failed": {
+            "header": "Signing failed",
+            "text": "Error message: "
+          },
+          "form": {
+            "placeholder": "### Heading\nThis text will be *signed* with your BankID!",
+            "useformatted": "Use formatted signature"
+          },
+          "link": {
+            "bisa": {
+              "base": "https://app.bankid.com/?autostarttoken={autoStartToken}\u0026redirect=",
+              "base|AndroidPre6": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=",
+              "base|IOSPre9": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=",
+              "redirect": "null",
+              "redirect|IOS": "[BASEURL]/sign#ref={orderRef}",
+              "redirect|IOSPre9": "[BASEURL]/sign#ref={orderRef}",
+              "redirect|Windows Phone": "[BASEURL]/sign#ref={orderRef}"
+            },
+            "bisp": "bankid:///?autostarttoken={autoStartToken}\u0026redirect=null"
+          },
+          "paragraph": "Here you can test to sign a text of your choice using the BankID you logged in with.",
+          "phonefocus": {
+            "altText": "Type security code on Phone!",
+            "paragraph": "Type your security code in the BankID app and press the Sign button."
+          },
+          "qrcode": {
+            "paragraph": "Start the BankID app and press the Scan QR button. Then scan the QR code above."
+          },
+          "title": "Sign test",
+          "validation": {
+            "required": "Enter a text to sign"
+          }
+        }
+      },
+      "test": {
+        "label": "This is a test label"
+      },
+      "usermessages": {
+        "RFA1": "Start your BankID app.",
+        "RFA13": "Trying to start your BankID app.",
+        "RFA16": "The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank.",
+        "RFA17B": "Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.",
+        "RFA2": "The BankID app is not installed. Please contact your internet bank.",
+        "RFA22": "Unknown error. Please try again.",
+        "RFA3": "Action cancelled. Please try again.",
+        "RFA4": "An identification or signing for this personal number is already started. Please try again.",
+        "RFA5": "Internal error. Please try again.",
+        "RFA6": "Action cancelled.",
+        "RFA8": "The BankID app is not responding. Please check that the program is started and that you have internet access. If you don’t have a valid BankID you can get one from your bank. Try again.",
+        "RFA9": "Enter your security code in the BankID app and select Identify or Sign."
+      }
+    }
+  },
+  "sessionTimeout": 10
+}

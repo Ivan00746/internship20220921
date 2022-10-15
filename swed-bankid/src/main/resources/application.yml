@@ -1,0 +1,5 @@
+application:
+  server:
+    url: https://appapi2.test.bankid.com
+server:
+  port: 8080
