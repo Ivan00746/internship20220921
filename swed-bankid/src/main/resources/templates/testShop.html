@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html data-ng-app="storeApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex, nofollow"/>
+    <link rel="icon" href="/shop/images/SBPlogo.ico" type="image/x-icon"/>
+    <title>Swedbank Pay Demoshop</title>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link href="/shop/css/min.css" rel="stylesheet">
+    <link id="siteTheme" href="/shop/css/default.css" rel="stylesheet"/>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,700,400italic,300,300italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <script src="/shop/js/jquery-1.10.2.min.js"></script>
+    <script src="/shop/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
+    <script src="/shop/js/app.js"></script>
+    <script src="/shop/js/cart.controller.js"></script>
+</head>
+<body>
+<div class="wrapper" data-ng-controller="CartController">
+    <header class="navbar-fixed-top settings-panel">
+        <div class="container">
+            <div class="navbar navbar-default navbar-static-top">
+                <div class="navbar-cart-btn-container">
+                    <a data-ng-click="showCartPopup = !showCartPopup" class="navbar-cart-btn navbar-toggle-btn">
+                        <span>
+                                <img src="/shop/images/transparent_blackcart_icon.png" height="32px" alt="Cart">
+                        </span>
+                        <span class="badge cart-badge hide" data-ng-class="{show: totalItemCount() > 0}">
+                            <span data-ng-bind="totalItemCount()"></span>
+                        </span>
+                    </a>
+                    <div data-ng-class="{'in show': showCartPopup == true}" id="cart-popup"
+                         class="popover fade bottom hide">
+                        <div class="arrow"></div>
+                        <div class="popover-title btn-group-xs">
+                            Shopping cart
+                            <span data-ng-click="showCartPopup = false" class="pull-right btn">
+                                <img src="/images/red_x_close.png" height="16px">
+                            </span>
+                        </div>
+                        <div class="popover-content">
+                            <div data-ng-if="totalItemCount() > 0">
+                                <p style="line-height: 24px;">
+                                    You have <span data-ng-bind="totalItemCount()"></span> product(s) in the cart
+                                </p>
+                                <p>
+                                    <a data-ng-click="moveOn()" class="btn btn-go-to-cart btn-block">
+                                        Buy items
+                                        <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                                        <span data-ng-bind="amountCount()"></span>
+                                        &#x20AC;
+                                    </a>
+                                </p>
+                            </div>
+                            <div data-ng-if="totalItemCount() == 0">
+                                <p style="line-height: 24px;">
+                                    Cart is empty
+                                </p>
+                                <p>
+                                    <a class="btn btn-default btn-block" data-ng-click="closeCartPopup()"
+                                       href="/bankid">Keep shopping</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://www.swedbank.com/openbanking.html">
+                        <img src="/shop/images/swedbank_logo.png" alt="BankLogo"/>
+                    </a>
+                </div>
+                <div class="center">
+                    <h3>Welcome to the Test implementation of SwedBank Pay with BankID</h3>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="main">
+        <div class="container">
+            <div class="product-list-wrapper">
+                <h2>Goods <small>(need shipping data)</small></h2>
+                <div class="products-list clearfix">
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                <img src="/shop/images/1_shutterstock_122602567.png"
+                                     alt="T-shirt Anton"/>
+                            </div>
+                            <div class="product-content">
+                                <h3>T-shirt Anton</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(0)">
+                            100,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(0)"
+                           href="" data-ng-click="removeProduct(0)">
+                            <span data-ng-bind="itemCount(0)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                <img src="/shop/images/2_shutterstock_127698176.png"
+                                     alt="T-shirt Ted"/>
+                            </div>
+                            <div class="product-content">
+                                <h3>T-shirt Ted</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(1)">
+                            10,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(1)"
+                           href="" data-ng-click="removeProduct(1)">
+                            <span data-ng-bind="itemCount(1)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                <img src="/shop/images/3_shutterstock_105769478.png"
+                                     alt="T-shirt Mathias"/>
+                            </div>
+                            <div class="product-content">
+                                <h3>T-shirt Mathias</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(2)">
+                            1,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(2)"
+                           href="" data-ng-click="removeProduct(2)">
+                            <span data-ng-bind="itemCount(2)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                <img src="/shop/images/4_shutterstock_89766265.png"
+                                     alt="T-shirt Benny"/>
+                            </div>
+                            <div class="product-content">
+                                <h3>T-shirt Benny</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(3)">
+                            1,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(3)"
+                           href="" data-ng-click="removeProduct(3)">
+                            <span data-ng-bind="itemCount(3)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="product-list-wrapper">
+                <h2>Digital services <small>(electronic delivery)</small></h2>
+                <div class="products-list clearfix">
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                <img src="/shop/images/1_shutterstock_120567646.png"
+                                     alt="Value code Energetic bouquet"/>
+                            </div>
+                            <div class="product-content">
+                                <h3>Value code Energetic bouquet</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(4)">
+                            100,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(4)"
+                           href="" data-ng-click="removeProduct(4)">
+                            <span data-ng-bind="itemCount(4)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                    <img src="/shop/images/2_shutterstock_128790185.png"
+                                         alt="Value code Happy bouquet"/>
+                            </div>
+                            <div class="product-content">
+                                    <h3>Value code Happy bouquet</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(5)">
+                            10,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(5)"
+                           href="" data-ng-click="removeProduct(5)">
+                            <span data-ng-bind="itemCount(5)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                    <img src="/shop/images/3_shutterstock_94660375.png"
+                                         alt="Value code Blue bouquet"/>
+                            </div>
+                            <div class="product-content">
+                                    <h3>Value code Blue bouquet</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(6)">
+                            1,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(6)"
+                           href="" data-ng-click="removeProduct(6)">
+                            <span data-ng-bind="itemCount(6)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="product-wrapper col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="product">
+                            <div class="product-image">
+                                    <img src="/shop/images/4_shutterstock_95018155.png"
+                                         alt="Value code Grateful bouquet"/>
+                            </div>
+                            <div class="product-content">
+                                    <h3>Value code Grateful bouquet</h3>
+                            </div>
+                        </div>
+                        <a class="btn btn-demosite btn-add-to-cart" href="" data-ng-click="addProduct(7)">
+                            1,00 &#x20AC;
+                            <span class="add-icon-bg">
+                                <span>+
+                                </span>
+                            </span>
+                        </a>
+                        <a class="btn btn-demosite1 btn-go-to-cart" data-ng-if="itemCount(7)"
+                           href="" data-ng-click="removeProduct(7)">
+                            <span data-ng-bind="itemCount(7)"></span>pcs
+                            <img src="/shop/images/transparent_whitecart_icon.png" height="20px"/>
+                            <span class="subtract-icon-bg">
+                                <span>-
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -54,7 +54,7 @@
             /*background-color: lightblue;*/
         }
 
-        .myDiv2 {
+        .myDiv {
             /*border: 3px outset blue;*/
             /*background-color: #2196F3;*/
             text-align: center;
@@ -67,32 +67,100 @@
             transition-duration: 0.4s;
         }
 
-        .button1:hover {
-            box-shadow: 0 10px 10px 15px rgba(0, 0, 0, 0.30);
+        .button:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+        }
+
+        legend {
+            border: #122b40;
+            background-color: white;
+        }
+
+        label {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #808080;
+        }
+
+        .submitInput {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 25px 0 6px 0;
+            box-sizing: border-box;
+            border: none;
+            background-color: #f6a958;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .submitInput:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+            background-color: #eaa155;
+        }
+
+        .inputFieldset {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 0 0 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #555;
+            /*border-radius: 4px;*/
+            background-color: white;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-text-fill-color: black;
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+            /*background-color: white;*/
+        }
+
+        .inputFieldset:invalid {
+            color: #ff0000 !important;
+        }
+
+        .inputFieldset:focus {
+            background-color: #cde1ee;
         }
     </style>
 </head>
 <body style="font-family: Helvetica, sans-serif">
 <div class="grid-container">
-    <div class="item1" style="text-align: left">
-        <img style="horiz-align: left" src="/images/service_provider.png" alt="Service Provider" height="50">
+    <div class="item1" style="display: flex; flex-direction: row">
+        <div style="text-align: left; width:50%; min-width: fit-content">
+            <img src="/images/service_provider.png" alt="Service Provider" height="50px">
+        </div>
+        <div style="text-align: right; width:50%; min-width: fit-content">
+            <input type="image" class="button button1" id="logOut" onclick="shopReturn()"
+                   src="/images/logOut.jpg" alt="LogOut" height="50px">
+        </div>
     </div>
     <div class="item2"></div>
     <div class="item3">
-        <div class="myDiv1">
-            <div class="myDiv2">
-                <br><br><br>
-                <img src="/images/title_selectionOfMethod.png" alt="Selection Logo" width="400px">
+        <div id="divMain" class="myDiv1">
+            <div id="div1" class="myDiv">
+                <img id="img_div1" src="/images/title_selectionOfMethod.png"
+                     style="margin-top: 50px" alt="Selection Logo" width="400px">
             </div>
-            <div class="myDiv2">
-                <input type="image" class="button button1" onclick="loginPageCheckOut()"
+            <div id="div2" class="myDiv">
+                <input id="input_div2" type="image" class="button" onclick="loginPageCheckOut()"
                        src="/images/menu_item_bankid.png" alt="BankId item" height="80">
             </div>
-            <div class="myDiv2">
-                <img src="/images/menu_item_other_id.png" alt="OtherId item" height="80">
+            <div id="div3" class="myDiv">
+                <input id="input_div3" type="image" class="button" onclick="messageSwedBankId()"
+                       src="/images/menu_item_other_id.png" alt="OtherId item" height="80">
             </div>
-            <div class="myDiv2">
-                <img src="/images/menu_item_other_method.png" alt="Other method item" height="80">
+            <div id="div4" class="myDiv">
+                <input id="input_div4" type="image" class="button" onclick="testDataInput()"
+                       src="/images/menu_item_other_method.png" alt="Other method item" height="80">
             </div>
         </div>
     </div>

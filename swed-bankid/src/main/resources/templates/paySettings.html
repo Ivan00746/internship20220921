@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html data-ng-app="storeApp" lang="en">
+<head id="head">
+    <title>Payment settings</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow"/>
+    <link rel="icon" href="/shop/images/SBPlogo.ico" type="image/x-icon"/>
+    <link href="/shop/css/min.css" rel="stylesheet">
+    <link id="siteTheme" href="/shop/css/default.css" rel="stylesheet"/>
+    <script src="/shop/js/jquery-1.10.2.min.js"></script>
+    <script src="/shop/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
+    <script src="/shop/js/app.js"></script>
+    <script src="/shop/js/cart.controller.js"></script>
+    <style>
+        .item1 {
+            grid-area: header;
+        }
+
+        .item2 {
+            grid-area: left;
+        }
+
+        .item3 {
+            grid-area: main;
+        }
+
+        .item4 {
+            grid-area: right;
+        }
+
+        .item5 {
+            grid-area: footer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+            'header header header'
+            'left main right'
+            'footer footer footer';
+            gap: 1px;
+            padding: 1px;
+            /*background-color: #2196F3;*/
+        }
+
+        .grid-container > div {
+            alignment: top;
+            margin-top: 0;
+            height: 100%;
+            padding: 0;
+            font-size: 16px;
+            /*background-color: #FFFFFF;*/
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+        }
+
+        .submitInput {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 25px 0 6px 0;
+            box-sizing: border-box;
+            border: none;
+            background-color: #f6a958;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .submitInput:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+            background-color: #eaa155;
+        }
+
+        .inputFieldset {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 0 0 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #555;
+            background-color: white;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-text-fill-color: black;
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+            /*background-color: white;*/
+        }
+
+        .inputFieldset:invalid {
+            color: #ff0000 !important;
+        }
+
+        .inputFieldset:focus {
+            background-color: #cde1ee;
+        }
+
+        .inputFieldsetShipping {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 0 0 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #586aad;
+            /*border-radius: 4px;*/
+            background-color: white;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .inputFieldsetShipping:invalid {
+            color: #ff0000 !important;
+        }
+
+        .inputFieldsetShipping:focus {
+            background-color: #cde1ee;
+        }
+
+        ::placeholder {
+            color: #cccbcb;
+        }
+
+        :-ms-input-placeholder {
+            color: #cccbcb;
+        }
+
+        ::-ms-input-placeholder {
+            color: #cccbcb;
+        }
+
+        legend {
+            border: #122b40;
+            background-color: white;
+        }
+
+        label {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #808080;
+        }
+
+        .labelShipping {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #586aad;
+        }
+
+        /* Custom checkbox */
+        .containerFieldset {
+            display: block;
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 6px;
+            margin-top: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: black;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .containerFieldset input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #dedeea;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .containerFieldset:hover input ~ .checkmark {
+            background-color: #969696;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .containerFieldset input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .containerFieldset input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .containerFieldset .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        /* Create a custom radio button */
+        .checkmarkRadio {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #dedeea;
+            border-radius: 50%;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .containerFieldset:hover input ~ .checkmarkRadio {
+            background-color: #969696;
+        }
+
+        /* When the radio button is checked, add a blue background */
+        .containerFieldset input:checked ~ .checkmarkRadio {
+            background-color: #2196F3;
+        }
+
+        /* Create the indicator (the dot/circle - hidden when not checked) */
+        .checkmarkRadio:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the indicator (dot/circle) when checked */
+        .containerFieldset input:checked ~ .checkmarkRadio:after {
+            display: block;
+        }
+
+        /* Style the indicator (dot/circle) */
+        .containerFieldset .checkmarkRadio:after {
+            top: 6px;
+            left: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .optionalField {
+            background-color: #e9efff;
+        }
+
+        table {
+            color: #666973;
+            font-size: 16px;
+        }
+
+        td {
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper" data-ng-controller="CartController">
+    <header class="navbar-fixed-top settings-panel">
+        <div class="container">
+            <div class="navbar navbar-default navbar-static-top">
+                <div class="navbar-cart-btn-container">
+                    <a data-ng-click="showCartPopup = !showCartPopup" class="navbar-cart-btn navbar-toggle-btn">
+                        <span>
+                                <img src="/shop/images/transparent_blackcart_icon.png" height="32px" alt="Cart">
+                        </span>
+                        <span class="badge cart-badge hide" data-ng-class="{show: totalItemCount() > 0}">
+                            <span data-ng-bind="totalItemCount()"></span>
+                        </span>
+                    </a>
+                    <div data-ng-class="{'in show': showCartPopup == true}" id="cart-popup"
+                         class="popover fade bottom hide">
+                        <div class="arrow"></div>
+                        <div class="popover-title btn-group-xs">
+                            Shopping cart
+                            <span data-ng-click="showCartPopup = false" class="pull-right btn">
+                                <img src="/images/red_x_close.png" height="16px">
+                            </span>
+                        </div>
+                        <div class="popover-content">
+                            <div data-ng-if="totalItemCount() > 0">
+                                <p style="line-height: 24px;">
+                                    You have <span data-ng-bind="totalItemCount()"></span> product(s) in the cart<br>
+                                    worth <span data-ng-bind="amountCount()"></span>&#x20AC;
+                                </p>
+                                <p>
+                                    <a href="/bankid" class="btn btn-go-to-cart btn-block">
+                                        Back to product selection
+                                    </a>
+                                </p>
+                            </div>
+                            <div data-ng-if="totalItemCount() == 0">
+                                <p style="line-height: 24px;">
+                                    Cart is empty
+                                </p>
+                                <p>
+                                    <a class="btn btn-default btn-block" data-ng-click="closeCartPopup()"
+                                       href="/bankid">Back to product selection</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://www.swedbank.com/openbanking.html">
+                        <img src="/shop/images/swedbank_logo.png" alt="BankLogo"/>
+                    </a>
+                </div>
+                <div class="center">
+                    <h3>Please enter TEST DATA and order payment</h3>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="main">
+        <div class="container">
+            <div class="grid-container">
+                <div class="item1" style="text-align: center">
+                    <!--TODO Test field-->
+                    <p id="testField" style="font-size: 16px">
+<!--                        <span data-ng-bind="testData"></span>-->
+                    </p>
+                    <div style="text-align: left">
+                        <p style="font-size: 20px">Shopping cart</p>
+                        <p style="font-size: 16px">
+                            Order number <span data-ng-bind="publicOrderDataDTO.payeeReference"></span>
+                        </p>
+                    </div>
+                    <table id="orderTable" style="width: 80%; margin:auto; text-align: center">
+                        <tr style="background-color: #f9f9f9"
+                            data-ng-if="publicOrderDataDTO.itemDTOList.length > 0">
+                            <th></th>
+                            <th></th>
+                            <th><strong>QUANTITY</strong></th>
+                            <th><strong>PRICE</strong></th>
+                            <th><strong>AMOUNT</strong></th>
+                        </tr>
+                    </table>
+                    <br>
+                </div>
+                <div class="item2">
+                    <fieldset class="optionalField">
+                        <legend>Account age Indicator:</legend>
+                        <label class="containerFieldset">No account, guest checkout
+                            <input type="radio" value="01" name="accountAgeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Created during this transaction
+                            <input type="radio" value="02" checked="checked" name="accountAgeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Less than 30 days old
+                            <input type="radio" value="03" name="accountAgeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">30 to 60 days old
+                            <input type="radio" value="04" name="accountAgeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">More than 60 days old
+                            <input type="radio" value="05" name="accountAgeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Account change Indicator:</legend>
+                        <label class="containerFieldset">Changed during this transaction
+                            <input type="radio" value="01" checked="checked" name="accountChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Less than 30 days ago
+                            <input type="radio" value="02" name="accountChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">30 to 60 days ago
+                            <input type="radio" value="03" name="accountChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">More than 60 days ago
+                            <input type="radio" value="04" name="accountChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Last account’s password changing Indicator:</legend>
+                        <label class="containerFieldset">No changes
+                            <input type="radio" value="01" name="accountPwdChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Changed during this transaction
+                            <input type="radio" value="02" checked="checked" name="accountPwdChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Less than 30 days ago
+                            <input type="radio" value="03" name="accountPwdChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">30 to 60 days ago
+                            <input type="radio" value="04" name="accountPwdChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">More than 60 days old
+                            <input type="radio" value="05" name="accountPwdChangeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Last shipping address using Indicator:</legend>
+                        <label class="containerFieldset">This transaction
+                            <input type="radio" value="01" checked="checked" name="shippingAddressUsageIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Less than 30 days ago
+                            <input type="radio" value="02" name="shippingAddressUsageIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">30 to 60 days ago
+                            <input type="radio" value="03" name="shippingAddressUsageIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">More than 60 days ago
+                            <input type="radio" value="04" name="shippingAddressUsageIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset style="background-color: #ffeace">
+                        <legend>Suspicious activity Indicator:</legend>
+                        <label class="containerFieldset">No suspicious account activity has been observed
+                            <input type="radio" value="01" checked="checked" name="suspiciousAccountActivity">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Suspicious account activity has been observed
+                            <input type="radio" value="02" name="suspiciousAccountActivity">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+                </div>
+                <div class="item3" style="margin: auto; align-items: center">
+                    <div style="width: 400px">
+                        <form ng-submit="postUserPaymentData()">
+                            <fieldset>
+                                <legend>Consumer address & contact data:</legend>
+                                <label for="firstName">First name:</label>
+                                <input type="text" class="inputFieldset" id="firstName" readonly
+                                       style="background-color: #fcecc8; cursor: not-allowed"
+                                       ng-model="publicOrderDataDTO.givenName">
+                                <label for="lastName">Last name:</label>
+                                <input type="text" class="inputFieldset" id="lastName" readonly
+                                       style="background-color: #fcecc8; cursor: not-allowed"
+                                       ng-model="publicOrderDataDTO.surname">
+                                <br><br>
+                                <legend style="color: #9f9f9f">Contact data:</legend>
+                                <br>
+                                <label for="email">Email:</label>
+                                <input id="email" type="email" class="inputFieldset"
+                                       placeholder="karl.anderssson@mail.se"
+                                       pattern="^[a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                                <label for="msisdn">Mobile number:</label>
+                                <input id="msisdn" type="tel" class="inputFieldset" maxlength=20
+                                       pattern="\+[0-9][0-9- ]+[0-9]$" placeholder="+46759123456" required>
+                                <br><br>
+                                <legend style="color: #9f9f9f">Address data:</legend>
+                                <br>
+                                <label for="streetAddress">Street address:</label>
+                                <input id="streetAddress" type="text" class="inputFieldset"
+                                       pattern="^[a-zA-Z0-9\.\-/ ]{3,}" placeholder="Helgestavagen 9" required>
+                                <label for="city">City:</label>
+                                <input id="city" type="text" class="inputFieldset"
+                                       pattern="^[a-zA-Z\.\- ]{3,}" placeholder="Solna" required>
+                                <label for="zipCode">Zip code:</label>
+                                <input id="zipCode" type="text" class="inputFieldset"
+                                       pattern="[0-9]{5}" placeholder="17674" required>
+                                <label for="countryCode">Country:</label>
+                                <select id="countryCode" class="inputFieldset" required>
+                                    <option value="SE">Sweden</option>
+                                    <option value="NO">Norway</option>
+                                    <option value="FI">Finland</option>
+                                </select>
+                                <label id="needShippingAddressL" class="containerFieldset">
+                                    Shipping address differs your address?
+                                    <input id="needShippingAddressI" type="checkbox"
+                                           data-ng-click="setShippingAddress()">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <br>
+                                <div data-ng-class="{'in show': isShippingAddress == true}" class="hide">
+                                    <label for="emailShipping" class="labelShipping">Email of the recipient of the
+                                        goods:</label>
+                                    <input id="emailShipping" type="email" class="inputFieldsetShipping"
+                                           placeholder="karl.anderssson@mail.se"
+                                           pattern="^[a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                                    <label for="msisdnShipping" class="labelShipping">Phone number of the recipient of
+                                        the
+                                        goods:</label>
+                                    <input id="msisdnShipping" type="tel" class="inputFieldsetShipping" maxlength=20
+                                           pattern="\+[0-9][0-9- ]+[0-9]$" placeholder="+46759123456">
+                                    <label for="firstNameShipping" class="labelShipping">First name of the recipient of
+                                        the
+                                        goods:</label>
+                                    <input id="firstNameShipping" type="text" class="inputFieldsetShipping"
+                                           placeholder="Leia" pattern="^[A-Z][a-zA-Z]+$">
+                                    <label for="lastNameShipping" class="labelShipping">Last name of the recipient of
+                                        the
+                                        goods:</label>
+                                    <input id="lastNameShipping" type="text" class="inputFieldsetShipping"
+                                           placeholder="Ahlstrom" pattern="^[A-Z][a-zA-Z]+$">
+                                    <br>
+                                    <br>
+                                    <label for="streetAddressShipping" class="labelShipping">Shipping street
+                                        address:</label>
+                                    <input id="streetAddressShipping" type="text" class="inputFieldsetShipping"
+                                           pattern="^[a-zA-Z0-9\.\-/ ]{3,}" placeholder="Helgestavagen 9">
+                                    <label for="cityShipping" class="labelShipping">City of the shipping :</label>
+                                    <input id="cityShipping" type="text" class="inputFieldsetShipping"
+                                           pattern="^[a-zA-Z\.\- ]{3,}" placeholder="Solna">
+                                    <label for="zipCodeShipping" class="labelShipping">Shipping zip code:</label>
+                                    <input id="zipCodeShipping" type="text" class="inputFieldsetShipping"
+                                           pattern="[0-9]{5}" placeholder="17674">
+                                    <label for="countryCodeShipping" class="labelShipping">Delivery country:</label>
+                                    <select id="countryCodeShipping" class="inputFieldsetShipping">
+                                        <option value="SE">Sweden</option>
+                                        <option value="NO">Norway</option>
+                                        <option value="FI">Finland</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="DK">Denmark</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <input type="submit" class="submitInput" value="Next">
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div class="item4">
+                    <fieldset class="optionalField">
+                        <legend>Usage delivery Email Indicator</legend>
+                        <label class="containerFieldset">Has the Email already been used for e-delivery?
+                            <input id="deliveryEmailAddress" type="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                    </fieldset>
+
+                    <!--                    <fieldset class="leftField">-->
+                    <!--                        <legend>Gift card purchase Indicator</legend>-->
+                    <!--                        <label class="containerFieldset">Is this purchase a gift card?-->
+                    <!--                            <input type="checkbox">-->
+                    <!--                            <span class="checkmark"></span>-->
+                    <!--                        </label>-->
+                    <!--                    </fieldset>-->
+
+                    <fieldset class="optionalField">
+                        <legend>Delivery timeframe Indicator:</legend>
+                        <label id="electronicDeliveryL" class="containerFieldset">Electronic Delivery
+                            <input id="electronicDeliveryI" value="01" type="radio" name="deliveryTimeframeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="sameDayShippingL" class="containerFieldset">Same day shipping
+                            <input id="sameDayShippingI" value="02" type="radio" checked="checked"
+                                   name="deliveryTimeframeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="overnightShippingL" class="containerFieldset">Overnight shipping
+                            <input id="overnightShippingI" value="03" type="radio" name="deliveryTimeframeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="twoDayShippingL" class="containerFieldset">Two-day or more shipping
+                            <input id="twoDayShippingI" value="04" type="radio" name="deliveryTimeframeIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Preorder date:</legend>
+                        <input id="preOrderDate" type="date" class="inputFieldset">
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Preorder purchase Indicator:</legend>
+                        <label class="containerFieldset">Merchandise available
+                            <input type="radio" value="01" checked="checked" name="preOrderPurchaseIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset">Future availability
+                            <input type="radio" value="02" name="preOrderPurchaseIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Preorder purchase Indicator:</legend>
+                        <label id="shipBillingAdrL" class="containerFieldset">Ship to cardholder’s billing address
+                            <input id="shipBillingAdrI" type="radio" value="01" checked="checked" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="shipVerifiedAdrL" class="containerFieldset">Ship to another verified address on file
+                            with merchant
+                            <input id="shipVerifiedAdrI" type="radio" value="02" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="shipDiffersAdrL" class="containerFieldset">
+                            Ship to address that is different than cardholder’s billing address
+                            <input id="shipDiffersAdrI" type="radio" value="03" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset" style="color: #a9a9a9; cursor: not-allowed">Ship to Store /
+                            Pick-up at local store. Store address shall be populated in shipping address fields
+                            (not supported)
+                            <input type="radio" name="shipIndicator" value="04" disabled>
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="digitalGoodsL" class="containerFieldset">
+                            Digital goods, includes online services, electronic giftcards and redemption codes
+                            <input id="digitalGoodsI" type="radio" value="05" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="digitalTicketsL" class="containerFieldset">Travel and Event tickets, not shipped
+                            <input id="digitalTicketsI" type="radio" value="06" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label id="digitalOtherL" class="containerFieldset">Other, e.g. gaming, digital service
+                            <input id="digitalOtherI" type="radio" value="07" name="shipIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+
+                    <fieldset class="optionalField">
+                        <legend>Reorder purchase Indicator:</legend>
+                        <label class="containerFieldset">First time ordered
+                            <input type="radio" value="01" checked="checked" name="reOrderPurchaseIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                        <label class="containerFieldset" style="padding-bottom: 3px">Reordered
+                            <input type="radio" value="02" name="reOrderPurchaseIndicator">
+                            <span class="checkmarkRadio"></span>
+                        </label>
+                    </fieldset>
+                </div>
+                <div class="item5">
+                    <div id="checkout-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ID method menu</title>
     <link rel="icon" type="image/x-icon" href="/images/logoBankIdWhite.png">
-    <script type="text/javascript" async="" src="/js/authSuccessPage.js"></script>
+    <script type="text/javascript" async="" src="/js/sparePage.js"></script>
     <style>
         .item1 {
             grid-area: header;
@@ -50,7 +50,7 @@
             alignment: center;
         }
 
-        .myDiv2 {
+        .myDiv {
             text-align: center;
             padding: 2px;
         }
@@ -70,7 +70,7 @@
 <div class="grid-container">
     <div class="item1" style="display: flex; flex-direction: row">
         <div style="text-align: left; width:50%; min-width: fit-content">
-            <img src="/images/service_provider.png" alt="Service Provider" height="50px">
+            <img src="/images/swedbank_logo_name.png" alt="Service Provider" height="50px">
         </div>
         <div style="text-align: right; width:50%; min-width: fit-content">
             <input type="image" class="button button1" id = "logOut" onclick="logOut()"
@@ -88,7 +88,7 @@
                 <p id="p_div2" style="font-size: 20px; font-weight: bold;"></p>
             </div>
             <div id="div3" class="myDiv2">
-                <p id="p_div3" style="font-size: 16px;"></p>
+                <div id="checkout-container"></div>
             </div>
             <div id="div4" class="myDiv2">
             </div>

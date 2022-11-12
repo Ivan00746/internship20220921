@@ -52,7 +52,7 @@
 
         .myDiv2 {
             text-align: center;
-            padding: 2px;
+            padding: 5px;
         }
 
         .button {
@@ -68,8 +68,14 @@
 </head>
 <body style="font-family: Helvetica, sans-serif" onload="dataSessionRequest()">
 <div class="grid-container">
-    <div class="item1" style="text-align: left">
-        <img style="horiz-align: left" src="/images/service_provider.png" alt="Service Provider" height="50">
+    <div class="item1" style="display: flex; flex-direction: row">
+        <div style="text-align: left; width:50%; min-width: fit-content">
+            <img src="/images/service_provider.png" alt="Service Provider" height="50px">
+        </div>
+        <div style="text-align: right; width:50%; min-width: fit-content">
+            <input id="logOut" type="image" class="button button1" onclick="shopReturn()"
+                   src="/images/logOut.jpg" alt="LogOut" height="50px">
+        </div>
     </div>
     <div class="item2"></div>
     <div class="item3">

@@ -44,7 +44,7 @@ function collectRequest() {
                 clearInterval(window.getDynamicQR);
             }
             if (authStatus === "complete") {
-                window.location.replace("/bankid/authsuccess_page");
+                window.location.replace("/bankid/paysettings_page");
             }
             if (authStatus === "pending" && userMessage !== "") {
                 message("\n\n\n\n" + userMessage + "\n\n\n\n\n", "background:#BDE0FF");
@@ -63,10 +63,11 @@ function message(message, background) {
     document.getElementById("img_div1").setAttribute("src", "/images/red_x_close.png");
     document.getElementById("img_div1").setAttribute("onclick", "logOut()");
     document.getElementById("img_div1").setAttribute("class", "button button1");
-    document.getElementById("a_div2").setAttribute("style", "font-size: 20px; font-weight: bold;");
+    document.getElementById("a_div2").setAttribute("style", "font-size: 20px; font-weight: bold");
     document.getElementById("a_div2").innerText = message;
     document.getElementById("dynamicQRImg").remove();
     document.getElementById("launchReference").remove();
+    document.getElementById("logOut").remove();
 }
 
 function logOut() {
@@ -74,6 +75,10 @@ function logOut() {
     xhttp.open("POST", "/bankid/exit", true);
     xhttp.send();
     xhttp.onload = function () {
-        if (this.response === "exit") window.location.replace("/bankid");
+        if (this.response === "exit") window.location.replace("/bankid/authMethodSelect");
     }
+}
+
+function shopReturn() {
+    location.href = "/bankid";
 }

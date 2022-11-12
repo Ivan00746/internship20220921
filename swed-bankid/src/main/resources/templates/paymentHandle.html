@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html data-ng-app="storeApp" lang="en">
+<head id="head">
+    <title>Payment complete</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow"/>
+    <link rel="icon" href="/shop/images/SBPlogo.ico" type="image/x-icon"/>
+    <link href="/shop/css/min.css" rel="stylesheet">
+    <link id="siteTheme" href="/shop/css/default.css" rel="stylesheet"/>
+    <script src="/shop/js/jquery-1.10.2.min.js"></script>
+    <script src="/shop/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
+    <script src="/shop/js/app.js"></script>
+    <script src="/shop/js/cart.controller.js"></script>
+    <style>
+        .item1 {
+            grid-area: header;
+        }
+
+        .item2 {
+            grid-area: left;
+        }
+
+        .item3 {
+            grid-area: main;
+        }
+
+        .item4 {
+            grid-area: right;
+        }
+
+        .item5 {
+            grid-area: footer;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+            'header header header'
+            'left main right'
+            'footer footer footer';
+            gap: 1px;
+            padding: 1px;
+            /*background-color: #2196F3;*/
+        }
+
+        .grid-container > div {
+            alignment: top;
+            margin-top: 0;
+            height: 100%;
+            padding: 0;
+            font-size: 16px;
+            /*background-color: #FFFFFF;*/
+        }
+
+        .button {
+            display: inline-block;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+        }
+
+        .button:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+        }
+
+        .submitInput {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 25px 0 6px 0;
+            box-sizing: border-box;
+            border: none;
+            background-color: #f6a958;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .submitInput:hover {
+            box-shadow: 0 3px 3px 3px rgba(0, 0, 0, 0.30);
+            background-color: #eaa155;
+        }
+
+        .inputFieldset {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 0 0 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #555;
+            background-color: white;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-text-fill-color: black;
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+            /*background-color: white;*/
+        }
+
+        .inputFieldset:invalid {
+            color: #ff0000 !important;
+        }
+
+        .inputFieldset:focus {
+            background-color: #cde1ee;
+        }
+
+        .inputFieldsetShipping {
+            width: 100%;
+            padding: 10px 20px;
+            margin: 0 0 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #586aad;
+            /*border-radius: 4px;*/
+            background-color: white;
+            color: black;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .inputFieldsetShipping:invalid {
+            color: #ff0000 !important;
+        }
+
+        .inputFieldsetShipping:focus {
+            background-color: #cde1ee;
+        }
+
+        ::placeholder {
+            color: #cccbcb;
+        }
+
+        :-ms-input-placeholder {
+            color: #cccbcb;
+        }
+
+        ::-ms-input-placeholder {
+            color: #cccbcb;
+        }
+
+        legend {
+            border: #122b40;
+            background-color: white;
+        }
+
+        label {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #808080;
+        }
+
+        .labelShipping {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #586aad;
+        }
+
+        /* Custom checkbox */
+        .containerFieldset {
+            display: block;
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 6px;
+            margin-top: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: black;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .containerFieldset input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #dedeea;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .containerFieldset:hover input ~ .checkmark {
+            background-color: #969696;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .containerFieldset input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .containerFieldset input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .containerFieldset .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        /* Create a custom radio button */
+        .checkmarkRadio {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #dedeea;
+            border-radius: 50%;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .containerFieldset:hover input ~ .checkmarkRadio {
+            background-color: #969696;
+        }
+
+        /* When the radio button is checked, add a blue background */
+        .containerFieldset input:checked ~ .checkmarkRadio {
+            background-color: #2196F3;
+        }
+
+        /* Create the indicator (the dot/circle - hidden when not checked) */
+        .checkmarkRadio:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the indicator (dot/circle) when checked */
+        .containerFieldset input:checked ~ .checkmarkRadio:after {
+            display: block;
+        }
+
+        /* Style the indicator (dot/circle) */
+        .containerFieldset .checkmarkRadio:after {
+            top: 6px;
+            left: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .optionalField {
+            background-color: #e9efff;
+        }
+
+        table {
+            color: #666973;
+            font-size: 16px;
+        }
+
+        td {
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper" data-ng-controller="CartController">
+    <header class="navbar-fixed-top settings-panel">
+        <div class="container">
+            <div class="navbar navbar-default navbar-static-top">
+                <div class="navbar-cart-btn-container">
+                    <a data-ng-click="showCartPopup = !showCartPopup" class="navbar-cart-btn navbar-toggle-btn">
+                        <span>
+                                <img src="/shop/images/transparent_blackcart_icon.png" height="32px" alt="Cart">
+                        </span>
+                    </a>
+                    <div data-ng-class="{'in show': showCartPopup == true}" id="cart-popup"
+                         class="popover fade bottom hide">
+                        <div class="arrow"></div>
+                        <div class="popover-title btn-group-xs">
+                            Shopping cart
+                            <span data-ng-click="showCartPopup = false" class="pull-right btn">
+                                <img src="/images/red_x_close.png" height="16px">
+                            </span>
+                        </div>
+                        <div class="popover-content">
+                            <div>
+                                <p style="line-height: 24px;">
+                                    Cart is empty
+                                </p>
+                                <p>
+                                    <a class="btn btn-default btn-block" data-ng-click="logout()">
+                                        Back to product selection</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://www.swedbank.com/openbanking.html">
+                        <img src="/shop/images/swedbank_logo.png" alt="BankLogo"/>
+                    </a>
+                </div>
+                <div class="center">
+                    <h3>Payment completed!</h3>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="main">
+        <div class="container">
+            <div class="grid-container">
+                <div class="item1" style="text-align: center">
+                    <!--TODO Test field-->
+                    <p id="testField" style="font-size: 16px">
+                        <!--                        <span data-ng-bind="testData"></span>-->
+                    </p>
+                    <div style="text-align: left">
+                        <p style="font-size: 16px">
+                            Order number <span data-ng-bind="publicOrderDataDTO.payeeReference"></span>
+                        </p>
+                    </div>
+                    <table id="orderTable" style="width: 80%; margin:auto; text-align: center">
+                        <tr style="background-color: #f9f9f9">
+                            <th></th>
+                            <th></th>
+                            <th><strong>QUANTITY</strong></th>
+                            <th><strong>PRICE</strong></th>
+                            <th><strong>AMOUNT</strong></th>
+                        </tr>
+                    </table>
+                    <br>
+                </div>
+                <div class="item2" style="width: 300px; text-align: left">
+                    <fieldset style="border: none">
+                    <input type="button" style="border-radius: 4px; width: 200px; background-color: #e0e0e0"
+                           class="submitInput" value="Return to start" data-ng-click="logout()">
+                    </fieldset>
+                    <fieldset>
+                        <legend>Checkout merchant account:</legend>
+                        <legend>Acc: azovka00746@gmail.com Psw:Hillel123</legend>
+                        <input type="button" style="border-radius: 4px; width: 200px; background-color: #c4f1c4"
+                               class="submitInput" value="Merchant's profile" data-ng-click="profile()">
+                    </fieldset>
+                </div>
+                <div class="item3">
+                </div>
+                <div class="item4" style="margin: auto; align-items: center">
+                </div>
+                <div class="item5">
+                    <div id="msgDiv" style="text-align: center; margin-top: 40px; padding: 10px">
+                        <p id="msgField" style="font-size: 18px; font-weight: bold">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

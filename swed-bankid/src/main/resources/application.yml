@@ -1,5 +1,34 @@
-application:
-  server:
-    url: https://appapi2.test.bankid.com
 server:
   port: 8080
+
+logging:
+  level:
+    root: info
+
+application:
+  bankId:
+    server:
+      url: https://appapi2.test.bankid.com
+  swedBank:
+    server:
+      url: https://api.externalintegration.payex.com
+    token: dc2f403f580eaa70514abdf25b634e8e3ece7ddf82691c6044bd9a9e215ae5d6
+    paymentOrder:
+      default: #other setting values are NOT SUPPORTED by application
+        operation: Purchase
+        currency: EUR
+        language: en-US
+        productName: Checkout3
+        payer:
+          payerReference: not set #doesn`t needed, app uses payer SSN
+        orderItems:
+          restrictedToInstruments: not set #not implemented
+        riskIndicator:
+          pickUpAddress: not set #not implemented
+      defined: #SUPPORTED changes in settings
+        description: Test Purchase
+        payeeInfo:
+          payeeId: 9d813f7a-e019-4918-acc8-2020fb78e60d
+          payeeName: Hillel
+        riskIndicator:
+          giftCardPurchase: false
