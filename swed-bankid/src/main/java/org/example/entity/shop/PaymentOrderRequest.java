@@ -3,7 +3,6 @@ package org.example.entity.shop;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 @Data

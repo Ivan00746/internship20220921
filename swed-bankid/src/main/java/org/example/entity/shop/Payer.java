@@ -1,8 +1,8 @@
 package org.example.entity.shop;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NonNull;
+
 @Data
 public class Payer {
     private boolean digitalProducts; // false,
@@ -13,7 +13,6 @@ public class Payer {
     private String email;// "leia@payex.com",
     private String msisdn;// "+46787654321",
     private String payerReference;//not needed - "AB1234",
-    @NonNull
     private ShippingAddress shippingAddress;
     @NonNull
     private BillingAddress billingAddress;

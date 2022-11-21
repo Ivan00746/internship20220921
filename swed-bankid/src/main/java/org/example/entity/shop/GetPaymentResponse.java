@@ -2,9 +2,7 @@ package org.example.entity.shop;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.NonNull;
 
-import java.util.Arrays;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetPaymentResponse {

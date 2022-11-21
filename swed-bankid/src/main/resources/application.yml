@@ -25,7 +25,7 @@ application:
           restrictedToInstruments: not set #not implemented
         riskIndicator:
           pickUpAddress: not set #not implemented
-      defined: #SUPPORTED changes in settings
+      defined: #SUPPORTED settings changes
         description: Test Purchase
         payeeInfo:
           payeeId: 9d813f7a-e019-4918-acc8-2020fb78e60d

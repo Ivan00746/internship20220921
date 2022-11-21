@@ -9,6 +9,7 @@ import lombok.NonNull;
 public class PaymentOrderResponse {
     private PaymentOrder paymentOrder;
     private Operation[] operations;
+    private SBProblem sbProblem;
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)

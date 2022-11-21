@@ -3,7 +3,6 @@ package org.example.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.ClientBankIdTest;
 import org.example.entity.shop.*;
 import org.example.entity.shop.dto.PaymentSettingsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +12,12 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 @Slf4j
 @Service
 public class PaymentService {
-    private final RestTemplate defaultRestTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     @Value("${application.swedBank.server.url}")
     private String swedBankServerUrl;
     @Value("${application.swedBank.token}")
@@ -52,8 +48,10 @@ public class PaymentService {
     private final DataStore dataStore;
 
     @Autowired
-    public PaymentService(@Qualifier("dataStoreCreate") DataStore dataStore) {
+    public PaymentService(@Qualifier("dataStoreCreate") DataStore dataStore,
+                          @Qualifier("rtSwedBank") RestTemplate restTemplate) {
         this.dataStore = dataStore;
+        this.restTemplate = restTemplate;
     }
 
     public PaymentOrderResponse paymentSettlement(PaymentSettingsDTO paymentSettings) {
@@ -67,13 +65,13 @@ public class PaymentService {
         dataStore.getPaymentorder().setProductName(productName);
 
         dataStore.getPaymentorder().getUrls()
-                .setHostUrls(new String[]{"http://localhost:" + dataStore.getServerPort() + "/bankid"});
+                .setHostUrls(new String[]{dataStore.getServerPath() + "/bankid"});
         dataStore.getPaymentorder().getUrls()
-                .setCompleteUrl("http://localhost:" + dataStore.getServerPort() + "/bankid/payment_completed");
+                .setCompleteUrl(dataStore.getServerPath() + "/bankid/payment_completed");
         dataStore.getPaymentorder().getUrls()
-                .setCancelUrl("http://localhost:" + dataStore.getServerPort() + "/bankid/payment_cancelled");
+                .setCancelUrl(dataStore.getServerPath() + "/bankid/payment_cancelled");
         dataStore.getPaymentorder().getUrls()
-                .setCallbackUrl("http://localhost:" + dataStore.getServerPort() + "/bankid/payment_callback");
+                .setCallbackUrl(dataStore.getServerPath() + "/bankid/payment_callback");
 //        termsOfServiceUrl supports HTTPS only:
         dataStore.getPaymentorder().getUrls().setTermsOfServiceUrl(null);
 
@@ -83,14 +81,17 @@ public class PaymentService {
 //        productCategory: null
 //        orderReference is defined by CommonRestController
 
-        boolean onlyElectronicDelivery = true;
-        for (int i=0; i < 4; i++) {
-            if (dataStore.getOrder()[i].getQuantity() != 0) {
-                onlyElectronicDelivery = false;
-                break;
-            }
-        }
-        dataStore.getPaymentorder().getPayer().setDigitalProducts(onlyElectronicDelivery);
+//        TODO -->Correct logic disabled for manual selection:
+//        boolean onlyElectronicDelivery = true;
+//        for (int i=0; i < 4; i++) {
+//            if (dataStore.getOrder()[i].getQuantity() != 0) {
+//                onlyElectronicDelivery = false;
+//                break;
+//            }
+//        }
+
+//        TODO -->Correct logic disabled for manual selection:
+        dataStore.getPaymentorder().getPayer().setDigitalProducts(paymentSettings.getDigitalProducts());
 
         Payer.NationalIdentifier nationalIdentifier = new Payer.NationalIdentifier();
         nationalIdentifier.setSocialSecurityNumber(dataStore.getCollectInfo().getCompletionData().
@@ -107,7 +108,9 @@ public class PaymentService {
                 .replaceAll(" |\\(|\\)|-", ""));
 //      since there is SNN payerReference is not needed and not supported
 
-        if (!onlyElectronicDelivery) {
+        if (!paymentSettings.getDigitalProducts()) {
+            if (dataStore.getPaymentorder().getPayer().getShippingAddress() == null)
+                dataStore.getPaymentorder().getPayer().setShippingAddress(new Payer.ShippingAddress());
             dataStore.getPaymentorder().getPayer().getShippingAddress().setFirstName(paymentSettings
                     .getFirstNameShipping());
             dataStore.getPaymentorder().getPayer().getShippingAddress().setLastName(paymentSettings
@@ -144,7 +147,7 @@ public class PaymentService {
                 .getAccountPwdChangeIndicator());
         dataStore.getPaymentorder().getPayer().getAccountInfo().setShippingAddressUsageIndicator(paymentSettings
                 .getShippingAddressUsageIndicator());
-        if (!onlyElectronicDelivery) {
+        if (!paymentSettings.getDigitalProducts()) {
             dataStore.getPaymentorder().getPayer().getAccountInfo()
                     .setShippingNameIndicator((dataStore.getPaymentorder().getPayer().getFirstName() +
                             dataStore.getPaymentorder().getPayer().getLastName()).equals(
@@ -190,25 +193,30 @@ public class PaymentService {
         headers.add("Accept", "application/json; q=0.9");
         headers.add("Forwarded", dataStore.getCollectInfo()
                 .getCompletionData().getDevice().getIpAddress());
-        log.info("-->PaymentOrder request to " + url);
-        log.info("   PaymentOrderRequest(Object): " + dataStore.getPaymentorder());
+        log.debug("-->PaymentOrder request to " + url);
+        log.debug("   PaymentOrderRequest(Object): " + dataStore.getPaymentorder());
         HttpEntity<PaymentOrderRequest> httpEntity =
                 new HttpEntity<>(new PaymentOrderRequest(dataStore.getPaymentorder()), headers);
+        PaymentOrderResponse response = new PaymentOrderResponse();
         try {
-            String responseString = defaultRestTemplate
-                    .postForObject(new URI(url), httpEntity, String.class);
-            log.info("<--Response(String): " + responseString);
-            ObjectMapper mapper = new ObjectMapper();
-            PaymentOrderResponse response = mapper.readValue(responseString, PaymentOrderResponse.class);
-            log.debug("   PaymentOrderResponse(Object): " + response);
-            if (response != null) {
-                dataStore.setPaymentOrderResponse(response);
-                return response;
+            String responseString = restTemplate
+                    .postForObject(url, httpEntity, String.class);
+            if (responseString != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                response = mapper.readValue(responseString, PaymentOrderResponse.class);
             }
-        } catch (URISyntaxException | JsonProcessingException e) {
+            if (response.getPaymentOrder() != null) {
+                log.debug("<--Response(String): " + responseString);
+                log.trace("   PaymentOrderResponse(Object): " + response);
+            } else {
+                response.setSbProblem(dataStore.getSbProblem());
+                dataStore.setSbProblem(null);
+            }
+        } catch (JsonProcessingException e) {
             log.error(e.toString());
         }
-        return new PaymentOrderResponse();
+        dataStore.setPaymentOrderResponse(response);
+        return response;
     }
 
     public void getAfterPaymentOperations() {
@@ -216,16 +224,16 @@ public class PaymentService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + accessToken);
-        log.info("-->GetAfterPaymentOperations request to " + url);
+        log.debug("-->GetAfterPaymentOperations request to " + url);
         try {
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = defaultRestTemplate
+            ResponseEntity<String> response = restTemplate
                     .exchange(url, HttpMethod.GET, requestEntity, String.class);
             String responseString = response.getBody();
-            log.info("<--GetAfterPaymentOperations response(String): " + responseString);
+            log.debug("<--GetAfterPaymentOperations response(String): " + responseString);
             ObjectMapper mapper = new ObjectMapper();
             GetPaymentResponse getResponse = mapper.readValue(responseString, GetPaymentResponse.class);
-            log.debug("   GetAfterPaymentOperations(Object): " + getResponse);
+            log.trace("   GetAfterPaymentOperations(Object): " + getResponse);
             if (getResponse != null) {
                 dataStore.setGetPaymentResponse(getResponse);
             }

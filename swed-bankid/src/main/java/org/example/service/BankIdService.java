@@ -44,17 +44,17 @@ public class BankIdService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
         try {
-            log.info("--> Request to /rp/v5.1/auth method;");
-            log.info("    Request body: " + requestBody + ";");
+            log.debug("--> Request to /rp/v5.1/auth method;");
+            log.debug("    Request body: " + requestBody + ";");
             dataStore.setAuthInfo(restTemplate
                     .postForObject(new URI(url), httpEntity, AuthInfo.class));
             if (dataStore.getAuthInfo() != null) {
                 dataStore.setAuthResponseTime(Instant.now());
-                log.info("<-- Response from /rp/v5.1/auth method with AuthInfo");
-                log.info("    OrderRef: " + dataStore.getAuthInfo().getOrderRef() + ";");
-                log.debug("    AutoStartToken: " + dataStore.getAuthInfo().getAutoStartToken() + ";");
-                log.debug("    QrStartToken: " + dataStore.getAuthInfo().getQrStartToken() + ";");
-                log.debug("    QrStartSecret: " + dataStore.getAuthInfo().getQrStartSecret() + ";");
+                log.debug("<-- Response from /rp/v5.1/auth method with AuthInfo");
+                log.debug("    OrderRef: " + dataStore.getAuthInfo().getOrderRef() + ";");
+                log.trace("    AutoStartToken: " + dataStore.getAuthInfo().getAutoStartToken() + ";");
+                log.trace("    QrStartToken: " + dataStore.getAuthInfo().getQrStartToken() + ";");
+                log.trace("    QrStartSecret: " + dataStore.getAuthInfo().getQrStartSecret() + ";");
                 requestIndex = 0;
                 return dataStore.getAuthInfo();
             } else
@@ -85,17 +85,17 @@ public class BankIdService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
             try {
-                log.info("--> Request to /rp/v5.1/collect method;");
-                log.info("    Request body: " + requestBody + ";");
+                log.debug("--> Request to /rp/v5.1/collect method;");
+                log.debug("    Request body: " + requestBody + ";");
                 CollectInfo instantCollectInfo = restTemplate.
                         postForObject(new URI(url), httpEntity, CollectInfo.class);
                 if (instantCollectInfo != null && instantCollectInfo.getOrderRef() != null) {
                     dataStore.setCollectInfo(instantCollectInfo);
-                    log.info("<-- Response from /rp/v5.1/collect method with DataStore.getCollectInfo():");
-                    log.debug("    OrderRef: " + dataStore.getCollectInfo().getOrderRef() + ";");
-                    log.info("    Status: " + dataStore.getCollectInfo().getStatus() + ";");
-                    log.info("    HintCode: " + dataStore.getCollectInfo().getHintCode() + ";");
-                    log.debug("    CompletionData: " + dataStore.getCollectInfo().getCompletionData().getUser() + ", "
+                    log.debug("<-- Response from /rp/v5.1/collect method with DataStore.getCollectInfo():");
+                    log.trace("    OrderRef: " + dataStore.getCollectInfo().getOrderRef() + ";");
+                    log.debug("    Status: " + dataStore.getCollectInfo().getStatus() + ";");
+                    log.debug("    HintCode: " + dataStore.getCollectInfo().getHintCode() + ";");
+                    log.trace("    CompletionData: " + dataStore.getCollectInfo().getCompletionData().getUser() + ", "
                             + dataStore.getCollectInfo().getCompletionData().getDevice() + ";");
                 }
             } catch (ResourceAccessException e) {

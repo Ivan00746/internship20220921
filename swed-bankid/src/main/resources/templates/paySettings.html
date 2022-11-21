@@ -361,7 +361,7 @@
                 <div class="item1" style="text-align: center">
                     <!--TODO Test field-->
                     <p id="testField" style="font-size: 16px">
-<!--                        <span data-ng-bind="testData"></span>-->
+                        <!--                        <span data-ng-bind="testData"></span>-->
                     </p>
                     <div style="text-align: left">
                         <p style="font-size: 20px">Shopping cart</p>
@@ -380,6 +380,30 @@
                         </tr>
                     </table>
                     <br>
+                    <div style="width: 100%">
+                        <div style="width: fit-content; float: right; text-align:left">
+                            <fieldset style="background-color: #f3f3f3; display: flex">
+                                <legend>Form legend:</legend>
+                                <fieldset style="background-color: #ffffff">
+                                    <legend>Required fields</legend>
+                                    <input type="text" class="inputFieldset" readonly placeholder="necessary to fill"
+                                           style="cursor: not-allowed; width: 180px">
+                                </fieldset>
+                                <fieldset class="optionalField" style="text-align: left">
+                                    <legend>Fields with default settings</legend>
+                                    <label class="containerFieldset" style="cursor: not-allowed">Recommended settings
+                                        <input type="radio" disabled>
+                                        <span class="checkmarkRadio"></span>
+                                    </label>
+                                    <label class="containerFieldset" style="color: #a9a9a9; cursor: not-allowed">Not recommended settings
+                                        <input type="radio" disabled>
+                                        <span class="checkmarkRadio"></span>
+                                    </label>
+                                </fieldset>
+                            </fieldset>
+                            <br>
+                        </div>
+                    </div>
                 </div>
                 <div class="item2">
                     <fieldset class="optionalField">
@@ -586,6 +610,13 @@
                             <span class="checkmark"></span>
                         </label>
                     </fieldset>
+                    <fieldset class="optionalField">
+                        <legend>Digital products</legend>
+                        <label id="digitalProductsL" class="containerFieldset">Are these a digital products?
+                            <input id="digitalProductsI" type="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                    </fieldset>
 
                     <!--                    <fieldset class="leftField">-->
                     <!--                        <legend>Gift card purchase Indicator</legend>-->
@@ -649,12 +680,12 @@
                             <input id="shipDiffersAdrI" type="radio" value="03" name="shipIndicator">
                             <span class="checkmarkRadio"></span>
                         </label>
-                        <label class="containerFieldset" style="color: #a9a9a9; cursor: not-allowed">Ship to Store /
-                            Pick-up at local store. Store address shall be populated in shipping address fields
-                            (not supported)
-                            <input type="radio" name="shipIndicator" value="04" disabled>
-                            <span class="checkmarkRadio"></span>
-                        </label>
+                        <!--                        <label class="containerFieldset" style="color: #a9a9a9; cursor: not-allowed">Ship to Store /-->
+                        <!--                            Pick-up at local store. Store address shall be populated in shipping address fields-->
+                        <!--                            (not supported)-->
+                        <!--                            <input type="radio" name="shipIndicator" value="04" disabled>-->
+                        <!--                            <span class="checkmarkRadio"></span>-->
+                        <!--                        </label>-->
                         <label id="digitalGoodsL" class="containerFieldset">
                             Digital goods, includes online services, electronic giftcards and redemption codes
                             <input id="digitalGoodsI" type="radio" value="05" name="shipIndicator">
@@ -683,7 +714,9 @@
                     </fieldset>
                 </div>
                 <div class="item5">
-                    <div id="checkout-container">
+                    <div id="msgDiv">
+                        <p id="msgField" style="font-size: 18px; font-weight: bold">
+                        </p>
                     </div>
                 </div>
             </div>

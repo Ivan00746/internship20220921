@@ -1,29 +1,24 @@
 package org.example.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.ClientBankIdTest;
-import org.example.entity.bankIdAuth.CollectInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.example.service.DataStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
-
-public class ServerErrorHandler implements ResponseErrorHandler {
+@Slf4j
+public class BankIdErrorHandler implements ResponseErrorHandler {
     private final DataStore dataStore;
 
-    public ServerErrorHandler(DataStore dataStore) {
+    public BankIdErrorHandler(DataStore dataStore) {
         this.dataStore = dataStore;
     }
-
-    private static final Logger log = Logger.getLogger(ClientBankIdTest.class.getName());
 
     @Override
     public boolean hasError(ClientHttpResponse httpResponse) throws IOException {
@@ -43,7 +38,7 @@ public class ServerErrorHandler implements ResponseErrorHandler {
     private void responseParser(ClientHttpResponse httpResponse, String errorType)
             throws IOException {
         int bodyByte;
-        String errorCode = "", details = "";
+        String errorCode = "", details;
         StringBuilder bodyStringBuilder = new StringBuilder();
         do {
             bodyByte = httpResponse.getBody().read();
@@ -56,11 +51,11 @@ public class ServerErrorHandler implements ResponseErrorHandler {
             Map<String, String> responseBodyMap = mapper.readValue(bodyStringBuilder.toString(), Map.class);
             errorCode = responseBodyMap.get("errorCode");
             details = responseBodyMap.get("details");
-            log.warning("<-- " + errorType + " response from /rp/v5.1/...; " +
+            log.warn("<-- " + errorType + " response from /rp/v5.1/...; " +
                     httpResponse.getRawStatusCode() + ":" + httpResponse.getStatusText() +
                     "; errorCode:" + errorCode + "; details:" + details);
         } else {
-            log.warning("<-- " + errorType + " response from /rp/v5.1/...; " +
+            log.warn("<-- " + errorType + " response from /rp/v5.1/...; " +
                     httpResponse.getRawStatusCode() + ":" + httpResponse.getStatusText() +
                     "; no/broken response body");
         }

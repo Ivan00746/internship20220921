@@ -33,8 +33,9 @@ app.controller('CartController', function ($scope) {
                 document.getElementById("needShippingAddressL") != null) {
                 if (!$scope.needShippingAddress) {
                     document.getElementById("needShippingAddressL")
-                        .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-                    document.getElementById("needShippingAddressI").setAttribute("disabled", "");
+                        .setAttribute("style", "color: #a9a9a9");
+                        // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+                    // document.getElementById("needShippingAddressI").setAttribute("disabled", "");
                     deliveryFieldDelShippingOffer();
                     preorderFieldDelShippingOffer();
                 } else {
@@ -135,8 +136,9 @@ app.controller('CartController', function ($scope) {
             document.getElementById("shipDiffersAdrI")
                 .setAttribute("checked", "checked");
             document.getElementById("shipBillingAdrL")
-                .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-            document.getElementById("shipBillingAdrI").setAttribute("disabled", "");
+                .setAttribute("style", "color: #a9a9a9");
+                // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+            // document.getElementById("shipBillingAdrI").setAttribute("disabled", "");
             document.getElementById("emailShipping").value =
                 document.getElementById("email").value
             document.getElementById("msisdnShipping").value =
@@ -151,7 +153,7 @@ app.controller('CartController', function ($scope) {
                 .setAttribute("checked", "checked");
             document.getElementById("shipBillingAdrL")
                 .removeAttribute("style");
-            document.getElementById("shipBillingAdrI").removeAttribute("disabled");
+            // document.getElementById("shipBillingAdrI").removeAttribute("disabled");
         }
     }
 
@@ -180,6 +182,7 @@ app.controller('CartController', function ($scope) {
             "shippingAddressUsageIndicator": getInputRadioValue("shippingAddressUsageIndicator"),
             "suspiciousAccountActivity": getInputRadioValue("suspiciousAccountActivity"),
             "deliveryEmailAddress": getDeliveryEmailAddress(),
+            "digitalProducts": document.getElementById("digitalProductsI").checked,
             "deliveryTimeframeIndicator": getInputRadioValue("deliveryTimeframeIndicator"),
             "preOrderDate": document.getElementById("preOrderDate").value,
             "preOrderPurchaseIndicator": getInputRadioValue("preOrderPurchaseIndicator"),
@@ -187,13 +190,26 @@ app.controller('CartController', function ($scope) {
             "reOrderPurchaseIndicator": getInputRadioValue("reOrderPurchaseIndicator"),
         }));
         $scope.userPaymentDataPosted = true;
+        document.getElementById("needShippingAddressI").removeAttribute("checked");
         $scope.isShippingAddress = false;
         xhttp.onload = function () {
             let paymentOrderResponse = JSON.parse(this.response);
-            let operation = paymentOrderResponse.operations.find(function (o) {
-                return o.rel === "redirect-checkout";
-            });
-            window.location.replace(operation.href);
+            if (paymentOrderResponse.operations != null) {
+                let operation = paymentOrderResponse.operations.find(function (o) {
+                    return o.rel === "redirect-checkout";
+                });
+                window.location.replace(operation.href);
+            } else if (paymentOrderResponse.sbProblem !=null) {
+                let msg = paymentOrderResponse.sbProblem.title + ". "
+                    + paymentOrderResponse.sbProblem.detail + ".\n";
+                for (let i=0; i<paymentOrderResponse.sbProblem.problems.length; i++) {
+                    msg = msg + "Problem #" + (i+1) + ": "
+                        + paymentOrderResponse.sbProblem.problems[i].description + ".\n";
+                }
+                document.getElementById("msgDiv").setAttribute("style",
+                    "background-color:#ffffc8; text-align: left; margin-top: 40px; padding: 10px");
+                document.getElementById("msgField").innerText = msg;
+            }
         }
     }
 
@@ -215,24 +231,30 @@ app.controller('CartController', function ($scope) {
     }
 
     function deliveryFieldDelShippingOffer() {
+        document.getElementById("digitalProductsI").setAttribute("checked", "");
         document.getElementById("sameDayShippingI").removeAttribute("checked");
         document.getElementById("electronicDeliveryI")
             .setAttribute("checked", "checked");
         document.getElementById("sameDayShippingL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("sameDayShippingI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("sameDayShippingI").setAttribute("disabled", "");
         document.getElementById("overnightShippingL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("overnightShippingI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("overnightShippingI").setAttribute("disabled", "");
         document.getElementById("twoDayShippingL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("twoDayShippingI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("twoDayShippingI").setAttribute("disabled", "");
     }
 
     function deliveryFieldDelElectronicDelivery() {
+        document.getElementById("digitalProductsL").setAttribute("style", "color: #a9a9a9");
         document.getElementById("electronicDeliveryL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("electronicDeliveryI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("electronicDeliveryI").setAttribute("disabled", "");
     }
 
     function preorderFieldDelShippingOffer() {
@@ -240,26 +262,32 @@ app.controller('CartController', function ($scope) {
         document.getElementById("digitalGoodsI")
             .setAttribute("checked", "checked");
         document.getElementById("shipBillingAdrL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("shipBillingAdrI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("shipBillingAdrI").setAttribute("disabled", "");
         document.getElementById("shipVerifiedAdrL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("shipVerifiedAdrI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("shipVerifiedAdrI").setAttribute("disabled", "");
         document.getElementById("shipDiffersAdrL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("shipDiffersAdrI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("shipDiffersAdrI").setAttribute("disabled", "");
     }
 
     function preorderFieldDelElectronicDelivery() {
         document.getElementById("digitalGoodsL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("digitalGoodsI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("digitalGoodsI").setAttribute("disabled", "");
         document.getElementById("digitalTicketsL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("digitalTicketsI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("digitalTicketsI").setAttribute("disabled", "");
         document.getElementById("digitalOtherL")
-            .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
-        document.getElementById("digitalOtherI").setAttribute("disabled", "");
+            .setAttribute("style", "color: #a9a9a9");
+            // .setAttribute("style", "color: #a9a9a9; cursor: not-allowed");
+        // document.getElementById("digitalOtherI").setAttribute("disabled", "");
     }
 
     function addOrderRow(i) {

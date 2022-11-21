@@ -26,6 +26,7 @@ public class PaymentSettingsDTO {
     private String shippingAddressUsageIndicator;
     private String suspiciousAccountActivity;
     private String deliveryEmailAddress;
+    private Boolean digitalProducts;
     private String deliveryTimeframeIndicator;
     private String preOrderDate;
     private String preOrderPurchaseIndicator;

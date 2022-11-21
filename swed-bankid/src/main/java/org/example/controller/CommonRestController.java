@@ -155,7 +155,7 @@ public class CommonRestController {
                 message = "The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.";
             if (status.equals("failed") && hintCode.equals("startFailed") && !dataStore.isUsedDesktopApp())
                 message = "Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.";
-//        ServerErrorHandler status management:
+//        BankIdErrorHandler status management:
             if (status.equals("failed") && hintCode.equals("cancelled"))
                 message = "Action cancelled. Please try again.";
             if (status.equals("failed") && hintCode.equals("alreadyInProgress"))
