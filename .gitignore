@@ -11,6 +11,7 @@ target
 *.iws
 
 # logs
+logfile.*
 *.log
 
 # bin files
