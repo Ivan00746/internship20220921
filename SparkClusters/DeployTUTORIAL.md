@@ -25,8 +25,8 @@ According to documentation, Apache Spark currently supports several cluster mana
   applications.
 
 Many authors believe that an effective approach is to use the Hadoop manager with the Kubernetes 
-orchestrator. An increase of efficiency of the application is possible when measuring the speed of 
-calculation on examples of specific tasks.
+orchestrator. Improving the efficiency of the application is possible by measuring the speed
+calculations on examples of specific problems.
 
 **VISUALISATION.** In this approach app has one endpoint for GET requests with args to execute Spark session
 and methods to make simple response. Spark libraries as well as Kubernetes clusters support control plane UI.
@@ -51,13 +51,13 @@ Run the Spring Boot App (it requires a customized java 11 environment and local 
 and 4040 must be free):
 
 ```shell
-java -jar ./target/SpringSparkK8STest-1.0.jar
+java -jar ./target/SparkLocalDefaultTest-1.0.jar
 ```
 
 Optionally, executing of the application with Maven settings:
 
 ```shell
-mvn --projects smart.environment:SpringSparkK8STest spring-boot:run
+mvn --projects smart.environment:SparkLocalDefaultTest spring-boot:run
 ```
 
 Now go to [http://localhost:8080/](http://localhost:8080/).
@@ -126,7 +126,7 @@ More usage can be discovered with:
 ./kind create cluster --help
 ```
 
-Creation of additional cluster with another name:
+Optionally, creation of additional cluster with another name:
 ```shell
 ./kind create cluster --name kube-another-name-cluster
 ```
@@ -136,7 +136,7 @@ Delete redundant cluster:
 ./kind delete cluster --name kube-another-name-cluster
 ```
 
-    Optionally, you can collect all Kubernetes utils in custom folder and add path to this folder
+    Optionally, you can collect all Kubernetes utils in custom folder and add path of this folder
     to system environment variable PATH.
 
 </details>
@@ -156,7 +156,7 @@ docker exec -it kube-cluster-control-plane crictl images
 ```
 Output has to contain row:
 
-    docker.io/library/spring-spark-app         latest               .............       552MB
+    docker.io/library/spring-spark-app         latest               .............       ...MB
 
 Kube pod creation and running with YAML files:
     kubectl apply -f SpringSparkK8SCommon.yaml
@@ -222,7 +222,7 @@ Success:
 
 Connection with Kubernetes API is possible only with auth features (like tokens, certificates etc),
 which don't supported by a browsers. To provide connection between pod in Kubernetes cluster and any browser we can use internal service of
-**Kubectl util** (commands must be run in separated console window).
+**Kubectl util** (commands must be run in separated console windows).
 
 NB! This commands may interrupt your internet connection!
 

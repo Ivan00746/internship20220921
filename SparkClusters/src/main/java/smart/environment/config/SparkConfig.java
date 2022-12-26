@@ -20,17 +20,10 @@ public class SparkConfig {
     private String masterUri;
 
     @Bean
-    public SparkConf sparkConf() {
-        SparkConf sparkConf = new SparkConf()
-                .setAppName(appName)
-                .setMaster(masterUri);
-
-        return sparkConf;
-    }
-
-    @Bean
     public JavaSparkContext javaSparkContext() {
-        return new JavaSparkContext(sparkConf());
+        return new JavaSparkContext(new SparkConf()
+                .setAppName(appName)
+                .setMaster(masterUri));
     }
 
     @Bean
@@ -38,7 +31,7 @@ public class SparkConfig {
         return SparkSession
                 .builder()
                 .sparkContext(javaSparkContext().sc())
-                .appName("Integrating Spring-boot with Apache Spark")
+                .appName("Local default implementation of the Spark facilities")
                 .getOrCreate();
     }
 
