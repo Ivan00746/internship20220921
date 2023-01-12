@@ -1,0 +1,56 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spark methods test</title></head>
+<body>
+<div>
+    <p style="font-size: 18px">EndPoints:</p>
+    <p> 1. <strong>Selection</strong> Spark method report with Standalone local default settings: <a
+            href="http://localhost:9091/clusterStandalone/selectionReport">http://localhost:9091/clusterStandalone/selectionReport</a>;
+    </p>
+    <p> 2. <strong>Sort</strong> Spark method report with Standalone local default settings: <a
+            href="http://localhost:9091/clusterStandalone/sortingReport">http://localhost:9091/clusterStandalone/sortingReport</a>;
+    </p>
+    <br>
+</div>
+<div style="border: 2px outset #586aad; background-color: azure;">
+    <div th:each="selectionReport : ${selectionReports}">
+        <p th:text="'Selection report #' + ${selectionReport.getId()} + ', creation time: '
+        + ${selectionReport.getTimeOfCreation()}">Selection Report:</p>
+        <div>
+            <a th:text="'Initialisation time (measured during first execution): ' + ${selectionReport.getInitTime()} +
+            'ms, resource file contains ' + ${selectionReport.getRowsQuantity()} + ' rows.'">...init time...</a>
+        </div>
+        <div>
+            <a th:text="'Avarage single selection time: ' + ${selectionReport.getAverageSelectionTime()}
+            + 'ms:'">...average selection time...</a>
+        </div>
+        <div th:each="selectionResult : ${selectionReport.getSelectionResultArrayList()}">
+            <a th:text="'>   Number of character sequence <' + ${selectionResult.getCharSequence()}
+            + '> iterations: ' + ${selectionResult.getCount()} + ' times. Selection time: '
+            + ${selectionResult.getSelectionTime()} + 'ms.'"></a>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+<div style="border: 2px outset #586aad; background-color: honeydew;">
+    <div th:each="sortingReport : ${sortingReports}">
+        <p th:text="'Sorting report #' + ${sortingReport.getId()} + ', creation time: '
+        + ${sortingReport.getTimeOfCreation()}">Sorting Report:</p>
+        <div>
+        <a th:text="'Initialisation time (random data set creation time): ' + ${sortingReport.getInitTime()}
+            + 'ms, resource table consist of ' + ${sortingReport.getRowsQuantity()}
+            + ' rows with 5 columns within numbers from 0 to 1e9.' ">...init time...</a>
+        </div>
+        <div>
+            <a th:text="'Avarage single column sorting time: ' + ${sortingReport.getAverageSortingTime()}
+            + 'ms:'">...average sorting time...</a>
+        </div>
+        <div th:each="sortingResult : ${sortingReport.getSortingResultArrayList()}">
+            <a th:text="'>  Time of descending sort by column ' + ${sortingResult.getDescription()} + ': ' + ${sortingResult.getSortingTime()} + 'ms.'"></a>
+        </div>
+        <br>
+    </div>
+</div>
+</body>
+</html>
