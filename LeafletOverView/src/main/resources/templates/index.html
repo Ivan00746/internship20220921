@@ -6,33 +6,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Leaflet Map</title>
-    <!--    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />-->
     <link rel="stylesheet" href="/leaflet.css"/>
     <script src="/leaflet-src.js"></script>
-
-    <!--    <style>-->
-    <!--        html, body {-->
-    <!--            height: 100%;-->
-    <!--            margin: 0;-->
-    <!--        }-->
-    <!--        .leaflet-container {-->
-    <!--            height: 400px;-->
-    <!--            width: 600px;-->
-    <!--            max-width: 100%;-->
-    <!--            max-height: 100%;-->
-    <!--        }-->
-    <!--    </style>-->
+    <style>
+    </style>
 </head>
 <body>
-<div id="map" style="width: 800px; height: 400px;"></div>
+<div style=" display: flex;">
+    <div id="map" style="width: 600px; height: 300px; border: 1px solid gray"></div>
+    <div style="width: 50px"></div>
+    <div id="tiffMap" style="width: 600px; height: 300px; border: 1px solid grey"></div>
+</div>
+<br>
+<div style=" display: flex;">
+    <div style="width: 750px">
+        <u>LEAFLET data:</u><br>
+        <a>Wold pixel BOUNDS with current zoom: <strong id="dataField_2"></strong>;</a><br>
+        <a>Window current ZOOM: <strong id="dataField_1"></strong>;</a><br>
+        <a>Window pixel BOUNDS: <strong id="dataField_3"></strong>;</a><br>
+        <a>Window pixel CENTER: <strong id="dataField_4"></strong>;</a><br>
+        <a>Geographical coordinates of CENTER: <strong id="dataField_7"></strong>;</a><br><br>
+        <u style="color: royalblue">MANUALLY CALCULATED data (with JS methods):</u><br>
+        <a style="color: royalblue">ADDRESS of the central tile of the window, where:
+            <strong>z=ZOOM; x=Math.floor(CENTER.x/256); y=Math.floor(CENTER.y/256)</strong>:</a><br>
+        <a style="color: royalblue">LeafLet URI (https://source_domain/{z}/{x}/{y}.png): <strong
+                id="dataField_5"></strong>;</a><br>
+        <a style="color: royalblue">MARKER COORDINATES inside the tile: <strong
+                id="dataField_6"></strong>;</a><br><br>
+        <a style="color: red">To save source geo data with CRS-EPSG:3857 to the disk and brows a low resolution
+            view </a>
+        <a href="/getResampledImg">click here</a><a>.</a><br>
+        <i style="color: red">(it may take a considerable amount of time) </i>
+    </div>
+    <div>
+        <a style="color: royalblue">VIEW of the central tile (URI): <strong id="dataField_8"></strong>:</a><br>
+        <div style="position: relative; top: 0; left: 0;">
+            <img id="centralTile" style="position: relative; top: 0; left: 0; border: 2px royalblue solid;"
+                 src="" alt="Center tile">
+            <img id="centralMarker" src="" alt="Marker"/>
+        </div>
+    </div>
+</div>
 <script>
-    const map = L.map('map').setView([51.505, -0.09], 13);
-    const tiles = L.tileLayer('http://127.0.0.1:8080/getTile/{z}/{x}/{y}.png', {
+    const xhttp = new XMLHttpRequest();
+    let tiffMapIsSupported = false;
+    xhttp.open("GET", "/getTiffMapState");
+    xhttp.send();
+    xhttp.onload = function () {
+        tiffMapIsSupported = JSON.parse(this.response).tiffMapIsSupported;
+        if (tiffMapIsSupported) {
+            tiffMapCreate();
+        } else {
+            let p = document.createElement("p");
+            p.innerText = "...Not supported according to application settings..."
+            p.setAttribute("style", "color: grey");
+            document.getElementById("tiffMap").appendChild(p);
+        }
+    }
+
+    let controlSwitch;
+
+    const map = L.map('map').setView([47.160005, 37.530743], 6);
+    map.on('move moveend', onMapMove)
+    map.on('mouseover keydown preclick', function () {
+        controlSwitch = "map";
+    });
+    const tiles = L.tileLayer('/getTile/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+    const mapMarker = L.marker(map.getCenter()).addTo(map);
+    mapMarker.bindPopup("<b>Center of the map window</b>");
+
+    function tiffMapCreate() {
+        tL = Object.create(L);
+        tiffMap = tL.map('tiffMap').setView(map.getCenter(), map.getZoom());
+        tiffMap.on('move moveend', onTiffMapMove);
+        tiffMap.on('mouseover keydown preclick', function () {
+            controlSwitch = "tiffMap";
+        });
+        tiffTiles = tL.tileLayer('/getTiffTile/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://online.ithillel.ua/">Hillel</a>'
+        }).addTo(tiffMap);
+        tiffMapMarker = tL.marker(map.getCenter()).addTo(tiffMap);
+        tiffMapMarker.bindPopup("<b>Center of the tiff map window</b>");
+    }
+
+    tabDataFill();
+
+    function onMapMove() {
+        if (controlSwitch === "map") {
+            mapMarker.setLatLng(map.getCenter());
+            if (tiffMapIsSupported) {
+                tiffMap.setView(map.getCenter(), map.getZoom());
+                tiffMapMarker.setLatLng(map.getCenter());
+            }
+        }
+        tabDataFill();
+    }
+
+    function onTiffMapMove() {
+        if (controlSwitch === "tiffMap") {
+            tiffMapMarker.setLatLng(tiffMap.getCenter());
+            map.setView(tiffMap.getCenter(), tiffMap.getZoom());
+            mapMarker.setLatLng(tiffMap.getCenter());
+        }
+        tabDataFill();
+    }
+
+    function tabDataFill() {
+        var currentZoom = map.getZoom();
+        document.getElementById("dataField_1").innerText = currentZoom;
+        document.getElementById("dataField_2").innerText =
+            "{top/left: " + map.getPixelWorldBounds(currentZoom).getTopLeft()
+            + "; bottom/right: " + map.getPixelWorldBounds(currentZoom).getBottomRight() + "}";
+        document.getElementById("dataField_3").innerText =
+            "{top/left: " + map.getPixelBounds().getTopLeft()
+            + "; bottom/right: " + map.getPixelBounds().getBottomRight() + "}";
+        var centerPoint = L.CRS.EPSG3857.latLngToPoint(map.getCenter(), currentZoom);
+        document.getElementById("dataField_4").innerText = centerPoint;
+        document.getElementById("dataField_7").innerText = map.getCenter();
+        var x = Math.floor(centerPoint.x / 256);
+        var y = Math.floor(centerPoint.y / 256);
+        document.getElementById("dataField_5").innerText = ".../" + currentZoom
+            + "/" + x + "/" + y + ".png";
+        var tileX = Math.floor(centerPoint.x - x * 256);
+        var tileY = Math.floor(centerPoint.y - y * 256)
+        document.getElementById("dataField_6").innerText = "Point(" + tileX + "," + tileY + ")";
+        document.getElementById("centralTile").setAttribute("src",
+            "http://127.0.0.1:8080/getTile/" + currentZoom + "/" + x + "/" + y + ".png");
+        document.getElementById("centralMarker").setAttribute("style",
+            "position: absolute; top: " + (tileY - 39) + "px; left: " + (tileX - 10) + "px;");
+        document.getElementById("centralMarker").setAttribute("src",
+            "/images/marker-icon.png");
+        document.getElementById("dataField_8").innerText = ".../" + currentZoom
+            + "/" + x + "/" + y + ".png";
+    }
 </script>
-<br>
-<br>
 </body>
 </html>

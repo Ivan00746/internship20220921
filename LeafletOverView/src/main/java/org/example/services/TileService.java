@@ -19,14 +19,15 @@ import java.util.logging.Logger;
 public class TileService {
     private final RestTemplate restTemplate;
     private final TilesRepo tilesRepo;
-    @Value("${application.OpenStreetMap.server.url}")
-    private String tilesServerUrl;
+    private final String tilesServerUrl;
 
     @Autowired
-    public TileService(@Qualifier("rtOpenStreetMap") RestTemplate restTemplate,
+    public TileService(@Value("${application.OpenStreetMap.server.url}") String tilesServerUrl,
+                       @Qualifier("rtOpenStreetMap") RestTemplate restTemplate,
                        TilesRepo tilesRepo) {
         this.restTemplate = restTemplate;
         this.tilesRepo = tilesRepo;
+        this.tilesServerUrl = tilesServerUrl;
     }
 
     private static final Logger log = Logger.getLogger(TileService.class.getName());
@@ -35,7 +36,7 @@ public class TileService {
         byte[] tileByteArray = null;
         Optional<Tile> optionalTile = tilesRepo.findById(new TileCompKey(z, x, y));
         if (optionalTile.isEmpty()) {
-            log.info("---Tile with ID (" + z + ", " + x + ", " + y + ") isn't founded in local DB.");
+            log.info("---Tile " + z + "/" + x + "/" + y + " isn't founded in local DB.");
             String url = tilesServerUrl + "/" + z + "/" + x + "/" + y + ".png";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
@@ -53,13 +54,13 @@ public class TileService {
                     Tile tileTemp = new Tile(z, x, y, tileByteArray,
                             tilesServerUrl, Calendar.getInstance().getTime().toString());
                     tilesRepo.save(tileTemp);
-                    log.info("---Tile saved in DB: " + tileTemp);
+                    log.info("==>Tile " + z + "/" + x + "/" + y + " sent and saved in DB.");
                 }
             } catch (RestClientException e) {
                 log.warning(e.toString());
             }
         } else {
-            log.info("---Tile with ID (" + z + ", " + x + ", " + y + ") is founded and retrieved from local DB:" + optionalTile.get());
+            log.info("==>Tile " + z + "/" + x + "/" + y + " is retrieved from local DB and sent.");
             tileByteArray = optionalTile.get().getTileByteArray();
         }
         return tileByteArray;

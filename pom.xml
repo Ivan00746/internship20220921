@@ -17,12 +17,22 @@
         <spring-boot.version>2.7.1</spring-boot.version>
         <apache-spark.version>3.2.2</apache-spark.version>
         <postgresql.version>42.5.1</postgresql.version>
+        <geotools.version>28-RC</geotools.version>
         <jackson-databind.version>2.12.5</jackson-databind.version>
         <lombok.version>1.18.24</lombok.version>
+        <img-scaling-lib.version>4.2</img-scaling-lib.version>
         <jaxb.version>2.3.1</jaxb.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>geo-repo</id>
+            <name>GeoTools repo</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -84,6 +94,26 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-shapefile</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geotiff</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-epsg-hsql</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.imgscalr</groupId>
+                <artifactId>imgscalr-lib</artifactId>
+                <version>${img-scaling-lib.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
