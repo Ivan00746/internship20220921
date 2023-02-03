@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Layer Editor</title>
+    <link rel="stylesheet" href="/leaflet.css"/>
+    <script src="/leaflet-src.js"></script>
+    <style>
+        a, strong, select, input {
+            font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+            font-size: 14px;
+        }
+
+        .divMap {
+            width: 100%;
+            border: 1px solid dimgray;
+        }
+
+        .divButton {
+            padding-top: 10px;
+            background-color: white;
+            height: 30px;
+            width: 100%;
+            border-top: 1px solid #a6a6a6;
+            text-align: center;
+            cursor: pointer;
+            font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+            font-size: 16px;
+        }
+
+
+        .divButton:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .divSet {
+            padding: 8px;
+            overflow: auto;
+            display: none;
+        }
+
+        .divMsg {
+            display: flex;
+            width: 95%;
+            border: 1px solid gray;
+        }
+
+        .divMsgColor {
+            width: 3px;
+            background-color: #5b5be0;
+        }
+
+        .divMsgText {
+            width: 100%;
+            font-size: small;
+            background-color: white;
+            color: #585858;
+            padding: 5px 5px 5px 5px;
+            font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+        }
+
+        .buttonAdd {
+            position: relative;
+            top: 20px;
+            height: 30px;
+            width: 100%;
+            background-color: #bbffa9;
+            border: 0;
+        }
+
+        .buttonAdd:hover {
+            background-color: #9dd98b;
+        }
+
+        .buttonDel {
+            position: relative;
+            top: 150px;
+            height: 30px;
+            width: 100%;
+            background-color: #f5bd83;
+            border: 0;
+        }
+
+        .buttonDel:hover {
+            background-color: #d9a375;
+        }
+
+        .iconBar {
+            width: 44px;
+            padding: 6px 0 3px 0;
+            background-color: white;
+            border: 2px solid #b2b2b2;
+            border-radius: 5px;
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            bottom: auto;
+            left: auto;
+            opacity: 0.9;
+            z-index: 401;
+            cursor: pointer;
+        }
+
+        .icon {
+            width: 44px;
+            background-color: white;
+        }
+
+        .icon:hover {
+            background-color: #595959;
+        }
+    </style>
+</head>
+<body style="background-color: #f5f5f5; margin: 0;">
+<div style=" display: flex; padding: 5px 10px 5px 10px;">
+    <div style="width: 100%; text-align: left;">
+        <a id="debugMsg"></a>
+    </div>
+    <div class="icon" style="width: 90px; padding: 5px 0 0 15px; border: 1px solid dimgray; border-radius: 15px;">
+        <a href="/"><img src="/images/layers/backTr.png" style="height: 30px;"></a>
+    </div>
+</div>
+<div style=" display: flex;">
+    <div id="mapHolder" style="width: 100%; position: relative; right: 1px;">
+        <div id="map" class="divMap"></div>
+        <div class="iconBar">
+            <img id="i1" src="/images/layers/iconPointTr.png" class="icon" onclick="onClickMarkerIcon()">
+            <img id="i2" src="/images/layers/iconPLineTr.png" class="icon" onclick="onClickPLine()">
+            <img id="i3" src="/images/layers/iconMRecTr.png" class="icon" onclick="onClickPolygonIcon()">
+            <img id="i4" src="/images/layers/iconRecTr.png" class="icon" onclick="onClickRectIcon()">
+            <img id="i5" src="/images/layers/iconCircTr.png" class="icon" onclick="onClickCircleIcon()">
+            <img id="i6" src="/images/layers/iconHandTr.png" class="icon"
+                 style="background-color: #bbffa9;" onclick="onClickBrowsIcon()">
+            <img id="i7" src="/images/layers/iconArrTr.png" class="icon" onclick="onClickArrowIcon()">
+            <img id="i8" src="/images/layers/iconRecSelTr.png" class="icon">
+        </div>
+    </div>
+    <div style="width: 350px; background-color: #f5f5f5; border-top: 1px solid dimgray;
+    border-bottom: 1px solid dimgray; position: relative;">
+        <div class="divButton" style="border-top: 0;" onclick="onClickDivAdd()">
+            ADD new layer group
+        </div>
+        <div id="divSet_1" class="divSet">
+            <div class="divMsg">
+                <div id="addMsgColor" class="divMsgColor"></div>
+                <div id="addMsgText" class="divMsgText">
+                    Enter name of new layer group and press ADD
+                </div>
+            </div>
+            <br>
+            <a><strong>Enter layer group name:</strong></a>
+            <input id="addField" style="height: 30px;" size="24" maxlength="22">
+            <br><br>
+            <a><strong>Existing layer groups:</strong></a>
+            <div id="existingList">
+                <div></div>
+            </div>
+            <br><br>
+            <button class="buttonAdd" onclick="onClickLayerGrAdd()">ADD</button>
+        </div>
+        <div class="divButton" onclick="onClickDivDel()">
+            DELETE layer group
+        </div>
+        <div id="divSet_3" class="divSet">
+            <div class="divMsg">
+                <div class="divMsgColor"></div>
+                <div class="divMsgText">
+                    Select layer group to delete and press DELETE
+                </div>
+            </div>
+            <br>
+            <a><strong>Choose layer group name:</strong></a><br>
+            <div id="divSelection">
+                <select id="removeSelection" style="height: 30px; width: 180px;">
+                </select>
+            </div>
+            <br><br><br>
+            <button class="buttonDel" onclick="onClickLayerGrDel()">DELETE</button>
+        </div>
+        <div class="divButton" onclick="onClickDivEdit()">
+            EDIT layer elements
+        </div>
+        <div id="divSet_4" class="divSet" style="display: block">
+            <div class="divMsg">
+                <div class="divMsgColor"></div>
+                <div class="divMsgText">
+                    Click and drag to select features.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style=" display: flex; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+                font-size: 12px; color: #585858; padding: 5px 2px 3px 2px;">
+    Map viewer by Smart Environment v:1.0.1
+</div>
+<script>
+    const mapHeight = screen.availHeight - 160;
+    document.getElementById("map").setAttribute("style", "height: " + mapHeight + "px;");
+    document.getElementById("divSet_4").setAttribute("style", "display: block; height: "
+        + (mapHeight - 139) + "px;");
+
+    let editableLayer;
+    let editMode = false;
+    let shapePoints = [];
+
+    const bigPointIcon = L.icon({
+        iconUrl: '/images/layers/markers/bigPointTr.png',
+        iconSize: [15, 15],
+        iconAnchor: [7, 7]
+    });
+
+    const moveCrossIcon = L.icon({
+        iconUrl: '/images/layers/markers/moveCrossTr.png',
+        iconSize: [25, 25],
+        iconAnchor: [13, 13]
+    });
+
+    const map = L.map('map').setView([47.160005, 37.530743], 11);
+    const osm = L.tileLayer('/getTile/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    L.control.scale().addTo(map);
+
+    const mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        'contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
+    const mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}' +
+        '?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+    const streets = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+    const satellite = L.tileLayer(mbUrl, {
+        id: 'mapbox/satellite-v9',
+        tileSize: 512,
+        zoomOffset: -1,
+        attribution: mbAttr
+    });
+
+    const cities = L.layerGroup();
+    L.marker([47.204712, 37.315195]).bindPopup('Population: 1.9 thousands.').addTo(cities);
+    L.marker([47.174881, 37.687208]).bindPopup('Population: 10.3 thousands.').addTo(cities);
+    L.marker([47.10, 37.558]).bindPopup('Population: 425 thousands.').addTo(cities);
+
+    let baseLayers = {
+        'OpenStreetMap': osm,
+        'Streets': streets,
+        'Satellite': satellite
+    };
+    let userLayers = {
+        'Example of layer': cities
+    };
+
+    let layerControl = L.control.layers(baseLayers, userLayers);
+    layerControl.addTo(map);
+    layerControl.getContainer().addEventListener('mouseout', function () {
+        shapePointsCleaner();
+        if (editMode) {
+            onClickArrowIcon();
+        }
+    });
+
+    //--Icon MENU functions:
+    function onClickMarkerIcon() {
+        iconMenuShifter();
+        document.getElementById("i1").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "crosshair";
+        map.on('click', function (ev) {
+            setEditableMarker();
+            editableLayer.setLatLng(ev.latlng);
+            editableLayer.addTo(map);
+        });
+    }
+
+    function onClickPLine() {
+        iconMenuShifter();
+        document.getElementById("i2").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "crosshair";
+        setEditablePLine();
+        polyCreator();
+    }
+
+    function onClickPolygonIcon() {
+        iconMenuShifter();
+        document.getElementById("i3").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "crosshair";
+        setEditablePolygon();
+        polyCreator();
+    }
+
+    function onClickRectIcon() {
+        iconMenuShifter();
+        document.getElementById("i4").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "crosshair";
+        setEditableRect();
+        rectangleCreator();
+    }
+
+    function onClickCircleIcon() {
+        iconMenuShifter();
+        document.getElementById("i5").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "crosshair";
+        setEditableCircle();
+        circleCreator();
+    }
+
+    function onClickBrowsIcon() {
+        iconMenuShifter();
+        document.getElementById("i6").setAttribute("style", "background-color: #bbffa9;");
+        document.getElementById("map").style.cursor = "grab";
+    }
+
+    function onClickArrowIcon() {
+        iconMenuShifter();
+        editMode = true;
+        document.getElementById("i7").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "context-menu";
+        document.getElementById("debugMsg").innerHTML = "EditMode: " + editMode + "; Layers: ";
+        map.eachLayer(function (layer) {
+            document.getElementById("debugMsg").innerHTML += ((layer instanceof L.Marker) ? "Marker; " :
+                (layer instanceof L.Rectangle) ? "Rectangle; " :
+                    (layer instanceof L.Circle) ? "Circle; " :
+                        (layer instanceof L.Polygon) ? "Polygon; " :
+                            (layer instanceof L.Polyline) ? "Polyline; " : "<strong>N/d</strong>" + "; ");
+            switch (true) {
+                case layer instanceof L.Marker:
+                    layer.on('click', function () {
+                        shapePointsCleaner();
+                        markerEditor(layer);
+                    });
+                    break;
+                case layer instanceof L.Rectangle:
+                    layer.on('click', function () {
+                        shapePointsCleaner();
+                        rectangleEditor(layer);
+                    });
+                    break;
+                case layer instanceof L.Circle:
+                    layer.on('click', function () {
+                        shapePointsCleaner();
+                        circleEditor(layer);
+                    });
+                    break;
+                case layer instanceof L.Polyline:
+                    layer.on('click', function () {
+                        shapePointsCleaner();
+                        polyEditor(layer);
+                    });
+            }
+        });
+    }
+
+    function onClickRectSelIcon() {
+        iconMenuShifter();
+        document.getElementById("i8").setAttribute("style", "background-color: #f5bd83;");
+        document.getElementById("map").style.cursor = "context-menu";
+        setEditableRectSel();
+        rectangleSelector();
+    }
+
+    function polyCreator() {
+        map.off('click mousemove contextmenu');
+        map.on('click', function (ev1) {
+            shapePointsCleaner();
+            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
+            shapePoints.push(point1);
+            let polygonsArray = editableLayer.getLatLngs();
+            let polygonPointsLatLng = polygonsArray[0];
+            polygonPointsLatLng[0] = ev1.latlng;
+            editableLayer.setLatLngs(polygonsArray).addTo(map);
+            let cornerIndex = 1;
+            map.on('contextmenu', function (evx) {
+                if (cornerIndex === 1) {
+                    editableLayer.remove();
+                } else {
+                    if (!polygonPointsLatLng[cornerIndex - 1].equals(evx.latlng)) polygonPointsLatLng.pop();
+                    editableLayer.setLatLngs(polygonsArray);
+                }
+                if (editableLayer instanceof L.Polygon) {
+                    setEditablePolygon();
+                } else {
+                    setEditablePLine();
+                }
+                polyCreator();
+            });
+            map.on('mousemove', function (ev) {
+                polygonPointsLatLng[cornerIndex] = ev.latlng;
+                editableLayer.setLatLngs(polygonsArray);
+            });
+            map.off('click');
+            map.on('click', function (ev2) {
+                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
+                shapePoints.push(point2);
+                polygonPointsLatLng[cornerIndex++] = ev2.latlng;
+                editableLayer.setLatLngs(polygonsArray);
+            });
+        });
+    }
+
+    function rectangleCreator() {
+        map.off('click mousemove contextmenu');
+        map.on('click', function (ev1) {
+            shapePointsCleaner();
+            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
+            shapePoints.push(point1);
+            editableLayer.addTo(map);
+            map.on('contextmenu', function () {
+                shapePointsCleaner();
+                editableLayer.remove();
+                rectangleCreator();
+            });
+            map.on('mousemove', function (ev) {
+                editableLayer.setBounds([shapePoints[0].getLatLng(), ev.latlng]);
+            });
+            map.off('click');
+            map.on('click', function (ev2) {
+                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
+                shapePoints.push(point2);
+                editableLayer.setBounds([shapePoints[0].getLatLng(), shapePoints[1].getLatLng()]);
+                setEditableRect();
+                rectangleCreator();
+            });
+        });
+    }
+
+    function circleCreator() {
+        map.off('click mousemove contextmenu');
+        map.on('click', function (ev1) {
+            shapePointsCleaner();
+            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
+            shapePoints.push(point1);
+            editableLayer.setLatLng(ev1.latlng);
+            editableLayer.addTo(map);
+            map.on('contextmenu', function () {
+                shapePointsCleaner();
+                editableLayer.remove();
+                circleCreator();
+            });
+            map.on('mousemove', function (ev) {
+                editableLayer.setRadius(point1.getLatLng().distanceTo(ev.latlng));
+            });
+            map.off('click');
+            map.on('click', function (ev2) {
+                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
+                shapePoints.push(point2);
+                editableLayer.setRadius(point1.getLatLng().distanceTo(ev2.latlng));
+                setEditableCircle();
+                circleCreator();
+            });
+        });
+    }
+
+    //--Shapes editors:
+    function markerEditor(marker) {
+        editableLayer = marker;
+        let bigPointLayer = L.marker(marker.getLatLng(), {icon: bigPointIcon});
+        bigPointLayer.setZIndexOffset(500);
+        bigPointLayer.addTo(map);
+        bigPointLayer.getElement().style.cursor = "all-scroll";
+        shapePoints.push(bigPointLayer);
+        bigPointLayer.dragging.enable();
+        bigPointLayer.on('drag', function () {
+            marker.setLatLng(bigPointLayer.getLatLng());
+        });
+    }
+
+    function polyEditor(polyLayer) {
+        editableLayer = polyLayer;
+        let centerLatLng = getLayerCenter(editableLayer);
+        let center = L.marker(centerLatLng, {icon: moveCrossIcon});
+        center.setZIndexOffset(500);
+        center.setOpacity(1);
+        center.addTo(map);
+        center.getElement().style.cursor = "all-scroll";
+        shapePoints.push(center);
+        let centerLat = shapePoints[0].getLatLng().lat;
+        let centerLng = shapePoints[0].getLatLng().lng;
+        let linesArray = polyLayer.getLatLngs();
+        let linePointsLatLng = linesArray[0];
+        linePointsLatLng.forEach(function (pointLatLng) {
+            let point = L.marker(pointLatLng, {icon: bigPointIcon});
+            point.setZIndexOffset(500);
+            point.addTo(map);
+            point.getElement().style.cursor = "all-scroll";
+            shapePoints.push(point);
+            point.dragging.enable();
+            point.on('drag', function (ev) {
+                let pointIndex = shapePoints.indexOf(point);
+                linePointsLatLng[pointIndex - 1] = ev.latlng;
+                editableLayer.setLatLngs(linesArray);
+                shapePoints[0].setLatLng(editableLayer.getCenter());
+            });
+        });
+        shapePoints[0].dragging.enable();
+        shapePoints[0].on('drag', function (ev) {
+            let deltaLat = ev.latlng.lat - centerLat;
+            let deltaLng = ev.latlng.lng - centerLng;
+            for (let i = 0; i < linePointsLatLng.length; i++) {
+                linePointsLatLng[i] = L.latLng(linePointsLatLng[i].lat + deltaLat, linePointsLatLng[i].lng + deltaLng);
+                shapePoints[i + 1].setLatLng(linePointsLatLng[i]);
+            }
+            editableLayer.setLatLngs(linesArray);
+            centerLat = shapePoints[0].getLatLng().lat;
+            centerLng = shapePoints[0].getLatLng().lng;
+        });
+    }
+
+    function rectangleEditor(rect) {
+        editableLayer = rect;
+        let center = L.marker(rect.getCenter(), {icon: moveCrossIcon});
+        center.setZIndexOffset(500);
+        center.setOpacity(1);
+        center.addTo(map);
+        center.getElement().style.cursor = "all-scroll";
+        shapePoints.push(center);
+        let points = rect.getLatLngs();
+        let point1 = L.marker(points[0][0], {icon: bigPointIcon});
+        point1.setZIndexOffset(500);
+        point1.addTo(map);
+        point1.getElement().style.cursor = "ne-resize";
+        shapePoints.push(point1);
+        let point2 = L.marker(points[0][2], {icon: bigPointIcon});
+        point2.setZIndexOffset(500);
+        point2.addTo(map);
+        point2.getElement().style.cursor = "ne-resize";
+        shapePoints.push(point2);
+        point1.dragging.enable();
+        point1.on('drag', function () {
+            editableLayer.setBounds([shapePoints[1].getLatLng(), shapePoints[2].getLatLng()]);
+            center.setLatLng(editableLayer.getCenter());
+        });
+        point2.dragging.enable();
+        point2.on('drag', function () {
+            editableLayer.setBounds([shapePoints[1].getLatLng(), shapePoints[2].getLatLng()]);
+            center.setLatLng(editableLayer.getCenter());
+        });
+        center.dragging.enable();
+        center.on('drag', function () {
+            let recLat = shapePoints[2].getLatLng().lat - shapePoints[1].getLatLng().lat;
+            let recLng = shapePoints[2].getLatLng().lng - shapePoints[1].getLatLng().lng;
+            let centerLat = shapePoints[0].getLatLng().lat;
+            let centerLng = shapePoints[0].getLatLng().lng;
+            let point1Lat = (centerLat - recLat / 2);
+            let point1Lng = (centerLng - recLng / 2);
+            let point2Lat = (centerLat + recLat / 2);
+            let point2Lng = (centerLng + recLng / 2);
+            editableLayer.setBounds(L.latLngBounds(L.latLng(point1Lat, point1Lng),
+                L.latLng(point2Lat, point2Lng)));
+            point1.setLatLng(editableLayer.getLatLngs()[0][0]);
+            point2.setLatLng(editableLayer.getLatLngs()[0][2]);
+        });
+    }
+
+    function circleEditor(circle) {
+        editableLayer = circle;
+        let center = L.marker(circle.getLatLng(), {icon: moveCrossIcon});
+        center.setZIndexOffset(500);
+        center.setOpacity(1);
+        center.addTo(map);
+        center.getElement().style.cursor = "all-scroll";
+        shapePoints.push(center);
+        let point1 = L.marker(L.latLng(circle.getBounds().getSouth(), circle.getLatLng().lng), {icon: bigPointIcon});
+        point1.setZIndexOffset(500);
+        point1.addTo(map);
+        point1.getElement().style.cursor = "ns-resize";
+        shapePoints.push(point1);
+        point1.dragging.enable();
+        point1.on('drag', function () {
+            editableLayer.setRadius(center.getLatLng().distanceTo(point1.getLatLng()));
+        });
+        center.dragging.enable();
+        center.on('drag', function () {
+            editableLayer.setLatLng(center.getLatLng());
+            point1.setLatLng(L.latLng(editableLayer.getBounds().getSouth(), editableLayer.getLatLng().lng));
+        });
+    }
+
+    // TODO: redo functions to get settings from menu tools
+    function setEditableMarker() {
+        var myIcon = L.icon({
+            iconUrl: '/images/layers/markers/1Tr.png',
+            iconSize: [31, 41],
+            iconAnchor: [16, 41],
+            popupAnchor: [1, -34],
+            shadowUrl: '/images/marker-shadow.png',
+            shadowSize: [68, 95],
+            shadowAnchor: [22, 94]
+        });
+        editableLayer = L.marker(map.getCenter(), {icon: myIcon}).bindTooltip("new Marker");
+    }
+
+    function setEditablePLine() {
+        let points = [];
+        points[0] = []
+        points[0][0] = map.getCenter();
+        editableLayer = L.polyline(points, {color: "#b81eda", weight: 3});
+    }
+
+    function setEditablePolygon() {
+        let points = [];
+        points[0] = []
+        points[0][0] = map.getCenter();
+        editableLayer = L.polygon(points, {color: "#32c41b", weight: 1});
+    }
+
+    function setEditableRect() {
+        editableLayer = L.rectangle(L.latLngBounds(map.getCenter(), map.getCenter()), {color: "#1e41da", weight: 1});
+    }
+
+    function setEditableCircle() {
+        editableLayer = L.circle(map.getCenter(), {radius: 0, color: "#fd1500", weight: 1});
+    }
+
+    //--MENU functions:
+    //-----ADD layer group functions:
+    function onClickDivAdd() {
+        document.getElementById("addMsgColor").setAttribute("style", "background-color: #5b5be0;");
+        document.getElementById("addMsgText").innerText = "Enter name of new layer group and press ADD";
+        document.getElementById("divSet_1").setAttribute("style", "display: block; height: "
+            + (mapHeight - 139) + "px;");
+        document.getElementById("divSet_3").setAttribute("style", "display: none;");
+        document.getElementById("divSet_4").setAttribute("style", "display: none;");
+        layerGrDivRefresh();
+    }
+
+    function onClickLayerGrAdd() {
+        const newLGroupName = document.getElementById("addField").value;
+        var duplicate = false;
+        for (let layerName in userLayers) {
+            if (layerName === newLGroupName) duplicate = true;
+        }
+        if (!duplicate && newLGroupName !== "") {
+            document.getElementById("addField").value = "";
+            userLayers[newLGroupName] = L.layerGroup();
+            controlPaneRefresh();
+            document.getElementById("addMsgColor").setAttribute("style", "background-color: #5b5be0;");
+            document.getElementById("addMsgText").innerText = "Enter name of new layer group and press ADD";
+            layerGrDivRefresh();
+        } else {
+            document.getElementById("addMsgColor").setAttribute("style", "background-color: red;");
+            document.getElementById("addMsgText").innerText = "Layer group name is NULL or already EXISTS";
+        }
+    }
+
+    //--DELETE layer group functions:
+    function onClickDivDel() {
+        document.getElementById("divSet_1").setAttribute("style", "display: none;");
+        document.getElementById("divSet_3").setAttribute("style", "display: block; height: "
+            + (mapHeight - 139) + "px;");
+        document.getElementById("divSet_4").setAttribute("style", "display: none;");
+        layerGrSelRefresh();
+    }
+
+    function onClickLayerGrDel() {
+        const forDelLGroupName = document.getElementById("removeSelection").value;
+        delete userLayers[forDelLGroupName];
+        controlPaneRefresh();
+        layerGrSelRefresh();
+    }
+
+    //--EDIT layer group functions:
+    function onClickDivEdit() {
+        document.getElementById("divSet_1").setAttribute("style", "display: none;");
+        document.getElementById("divSet_3").setAttribute("style", "display: none;");
+        document.getElementById("divSet_4").setAttribute("style", "display: block; height: "
+            + (mapHeight - 139) + "px;");
+    }
+
+    //--Auxiliary functions:
+    function getLayerCenter(polyLayer) {
+        let centerLatLng = polyLayer.getCenter();
+        let pLayerBounds = polyLayer.getBounds();
+        if (!pLayerBounds.contains(centerLatLng)) {
+            centerLatLng = L.latLng((pLayerBounds.getNorth() + pLayerBounds.getSouth()) / 2,
+                (pLayerBounds.getEast() + pLayerBounds.getWest()) / 2);
+        }
+        return centerLatLng;
+    }
+
+    function layerGrDivRefresh() {
+        document.getElementById("existingList").getElementsByTagName("div")[0].remove();
+        const newDivList = document.createElement("div");
+        newDivList.setAttribute("style", "width: 95%; height: 105px; background-color: white; " +
+            "border: 1px solid gray; padding: 0 0 0 3px; overflow: auto");
+        var str = document.createElement("strong");
+        str.innerText = "User layers:";
+        newDivList.appendChild(str);
+        newDivList.appendChild(document.createElement("br"));
+        for (let layerName in userLayers) {
+            let a = document.createElement("a");
+            a.innerText = layerName;
+            newDivList.appendChild(a);
+            newDivList.appendChild(document.createElement("br"));
+        }
+        newDivList.appendChild(document.createElement("br"));
+        str = document.createElement("strong");
+        str.innerText = "Base map layers:";
+        newDivList.appendChild(str);
+        newDivList.appendChild(document.createElement("br"));
+        for (let layerName in baseLayers) {
+            let a = document.createElement("a");
+            a.innerText = layerName;
+            newDivList.appendChild(a);
+            newDivList.appendChild(document.createElement("br"));
+        }
+        document.getElementById("existingList").appendChild(newDivList);
+    }
+
+    function layerGrSelRefresh() {
+        document.getElementById("divSelection").getElementsByTagName("select")[0].remove();
+        const newSelection = document.createElement("select");
+        newSelection.setAttribute("id", "removeSelection");
+        newSelection.setAttribute("style", "height: 30px; width: 180px;");
+        document.getElementById("divSelection").appendChild(newSelection);
+        for (let layerName in userLayers) {
+            var layerOption = document.createElement("option");
+            layerOption.setAttribute("value", layerName);
+            layerOption.innerText = layerName;
+            document.getElementById("removeSelection").appendChild(layerOption)
+        }
+    }
+
+    function shapePointsCleaner() {
+        while (shapePoints.length !== 0) {
+            let point = shapePoints.shift();
+            point.remove();
+        }
+    }
+
+    //TODO:
+    function iconMenuShifter() {
+        for (let i = 1; i < 9; i++) document.getElementById("i" + i).removeAttribute("style");
+        map.off('click mousemove contextmenu');
+        shapePointsCleaner();
+        editMode = false;
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Marker) layer.off('click');
+            if (layer instanceof L.Polyline) layer.off('click');
+            if (layer instanceof L.Circle) layer.off('click');
+        });
+    }
+
+    function controlPaneRefresh() {
+        layerControl.remove();
+        layerControl = L.control.layers(baseLayers, userLayers);
+        layerControl.addTo(map);
+        layerControl.getContainer().addEventListener('mousedown', function () {
+            shapePointsCleaner();
+        }, true);
+    }
+</script>
+</body>
+</html>

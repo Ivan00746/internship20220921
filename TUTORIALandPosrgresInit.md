@@ -14,22 +14,22 @@ display a single large image, with arrow buttons to navigate to nearby areas. Go
 first major mapping sites to use this technique. The first tiled web maps used raster tiles, before the 
 emergence of vector tiles.
 
-OpenStreetMap maintains 20 zoom levels from 0 to 19. With zoom 0 all Earth surface appears in one image 
-(by default, with resolution 256px/256px). Zoom 1 and 2 are exposed on picture:
+OpenStreetMap maintains 20 zoom levels from 0 to 19. With **zoom 0** all Earth surface appears in one image 
+(with resolution 256px/256px). Zoom 1 and 2 are exposed on picture:
 
 <img src="imgs/Zoom_1vs2_comparison.png" style="width: 40%">
 
-As you can see, each next zoom level (in the case of calculating the coordinates of a flat surface) details four times 
-the images of the previous zoom level. With this approach, zoom level 0 contains 1 tile images, zoom level 
-1 - 4 images (displayed in the picture) and zoom level 2 - 16 tile images (displayed in the picture).
+As you can see, each next zoom level (in the case of calculating the coordinates of a flat surface) details
+four times more images of the previous zoom level. With this approach, zoom level 0 contains 1 fragment image,
+zoom level 1 contains 4 images (displayed in the picture), and zoom level 2 contains 16 fragment images 
+(displayed in the image).
 
 Map tile server's API returns tiles images after GET request to URI match to pattern:
 **https://somedomain.com/.../{z}/{x}/{y}.png**, where {z} — zoom level, {x} and {y} — tile coordinates.
 
-
-One of the goals of this implementation is to attempt to create a geomap tile API using Earth wrapper geoTiff data 
-with complete coverage of the entire surface of the Earth in CRS (Coordinate reference system) latitude from -90° to
-90° and longitude from -180° to 180°:
+One of the goals of this implementation is to attempt to create a geomap tile API using Earth wrapper 
+geoTiff data with complete coverage of entire surface of the Earth in any CRS (Coordinate reference system)
+with latitude from -90° to 90° and longitude from -180° to 180°:
 
 <img src="imgs/geoc_coordinates_sphere.png" style="width: 30%">
 
@@ -45,27 +45,27 @@ and unzip it to the folder for use by the application:
 Expand-Archive -Force NE2_50M_SR_W.zip ./input
 ```
 
-All Geo data servers are working as expose on diagram:
+All geodata servers work as shown in the diagram:
 
 <img src="imgs/Fig_4.4.png" style="width: 50%">
 
 This application transforms geoTiff files (CRS defined in a metadata) to tiles with size 256px x 256px
 with CRS - EPSG:3857 and geo scale matching LeafLet and OpenStreetMap properties. To achieve this goal
-app uses GeoTolls libraries to transform data in one CRS to another. 
+app uses GeoTolls libraries to transform data from one CRS to another. 
 
-For example max scale zoom view of Earth in EPSG:3857 looks like:
+For example, max scale zoom view of Earth in EPSG:3857 looks like:
 
 <img src="imgs/sourceGeoTiff.png" style="width: 50%">
 
-transformed to CRS EPSG:4326:
+1. transformed to CRS EPSG:4326:
 
 <img src="imgs/lowResCoverageEPSG3857.png" style="width: 50%">
 
-transformed to OpenStreetMap tile (zoom 0):
+2. transformed to OpenStreetMap tile with CRS EPSG:4326 (zoom 0):
 
 <img src="imgs/squareCoverageEPSG3857.png" style="width: 25%">
 
-As you can see they very differ (for example, compare square of Greenland on these images).
+As you can see they very differ (compare square of Greenland on these images).
 
 After data transformation, app creates tiles with GeoTools and ImgScalr libraries after web browser 
 requests ruled by LeafLet JS libraries.

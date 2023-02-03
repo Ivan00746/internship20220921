@@ -1,15 +1,12 @@
 package org.example.services;
 
 import org.example.entities.TiffTile;
-import org.example.entities.Tile;
 import org.example.entities.TileCompKey;
 import org.example.repo.TiffTilesRepo;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.processing.CoverageProcessor;
-import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.Envelope2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.util.factory.Hints;
 import org.imgscalr.Scalr;
 import org.opengis.coverage.processing.Operation;
 import org.opengis.geometry.Envelope;
@@ -19,18 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope;
 
 import javax.imageio.ImageIO;
-import javax.media.jai.Interpolation;
-import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderContext;
-import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -104,9 +93,13 @@ public class TiffTileService {
                 log.severe("IO Error of transformation tile " + z + "/" + x + "/" + y + "to byte array.");
             }
             tiffTileByteArray = bos.toByteArray();
-            TiffTile tileTemp = new TiffTile(z, x, y, tiffTileByteArray,
-                    "localHost", Calendar.getInstance().getTime().toString());
-            tiffTilesRepo.save(tileTemp);
+            synchronized (this) {
+                if (!tiffTilesRepo.existsById(new TileCompKey(z, x, y))) {
+                    TiffTile tileTemp = new TiffTile(z, x, y, tiffTileByteArray,
+                            "localHost", Calendar.getInstance().getTime().toString());
+                    tiffTilesRepo.save(tileTemp);
+                }
+            }
         } else {
             log.info("==>TiffTile " + z + "/" + x + "/" + y + " is retrieved from local DB and sent.");
             tiffTileByteArray = optionalTile.get().getTileByteArray();

@@ -23,6 +23,7 @@ import javax.media.jai.Interpolation;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.logging.Logger;
 
 @Component
@@ -38,7 +39,6 @@ public class CoverageSource {
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-//    @SessionScope
     public GridCoverage2D coverageEPSG3857Create() {
         File sourceFile = new File(sourceFilePath);
         CoordinateReferenceSystem crsEPSG4326, crsEPSG3857, originalCRS;

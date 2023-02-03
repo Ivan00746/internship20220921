@@ -18,7 +18,7 @@
         <apache-spark.version>3.2.2</apache-spark.version>
         <postgresql.version>42.5.1</postgresql.version>
         <geotools.version>28-RC</geotools.version>
-        <jackson-databind.version>2.12.5</jackson-databind.version>
+        <jackson-databind.version>2.14.0</jackson-databind.version>
         <lombok.version>1.18.24</lombok.version>
         <img-scaling-lib.version>4.2</img-scaling-lib.version>
         <jaxb.version>2.3.1</jaxb.version>

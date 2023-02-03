@@ -7,7 +7,6 @@ import org.springframework.web.context.annotation.SessionScope;
 
 @Configuration
 public class ContextConfig {
-
     @Bean
     @SessionScope
     public RestTemplate rtOpenStreetMap() {

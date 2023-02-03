@@ -10,4 +10,9 @@ public class CommonController {
     public String index () {
         return "index";
     }
+
+    @GetMapping("/layerEditor")
+    public String layerEditor () {
+        return "layerEditor";
+    }
 }

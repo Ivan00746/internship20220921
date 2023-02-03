@@ -9,13 +9,24 @@
     <link rel="stylesheet" href="/leaflet.css"/>
     <script src="/leaflet-src.js"></script>
     <style>
+        a, i, u {
+            font-family: "Arial Narrow", Arial, sans-serif;
+        }
+        .buttonLayer:hover {
+            box-shadow: 0 2px 2px 3px rgba(0, 0, 0, 0.30);
+        }
+
     </style>
 </head>
 <body>
 <div style=" display: flex;">
-    <div id="map" style="width: 600px; height: 300px; border: 1px solid gray"></div>
-    <div style="width: 50px"></div>
-    <div id="tiffMap" style="width: 600px; height: 300px; border: 1px solid grey"></div>
+    <div id="map" style="width: 50%; height: 300px; border: 1px solid gray"></div>
+    <div style="width: 110px; text-align: center; margin: auto">
+        <a href="/layerEditor">
+            <img src="/images/layers/layerImgLowRes.png" class="buttonLayer" style="width: 90px;">
+        </a>
+    </div>
+    <div id="tiffMap" style="width: 50%; height: 300px; border: 1px solid grey"></div>
 </div>
 <br>
 <div style=" display: flex;">

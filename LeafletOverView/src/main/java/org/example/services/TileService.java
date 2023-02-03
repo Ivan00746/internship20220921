@@ -51,9 +51,13 @@ public class TileService {
                 if (tileByteArray != null) {
                     log.info("<--Response (" + response.getHeaders().getContentType() + ") from link: "
                             + url + ". Byte array length: " + tileByteArray.length);
-                    Tile tileTemp = new Tile(z, x, y, tileByteArray,
-                            tilesServerUrl, Calendar.getInstance().getTime().toString());
-                    tilesRepo.save(tileTemp);
+                    synchronized (this) {
+                        if (!tilesRepo.existsById(new TileCompKey(z, x, y))) {
+                            Tile tileTemp = new Tile(z, x, y, tileByteArray,
+                                    tilesServerUrl, Calendar.getInstance().getTime().toString());
+                            tilesRepo.save(tileTemp);
+                        }
+                    }
                     log.info("==>Tile " + z + "/" + x + "/" + y + " sent and saved in DB.");
                 }
             } catch (RestClientException e) {
