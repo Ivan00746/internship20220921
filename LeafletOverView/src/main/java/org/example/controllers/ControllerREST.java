@@ -1,15 +1,16 @@
 package org.example.controllers;
 
 import org.example.entities.TiffMapState;
+import org.example.entities.layers.LayerGroup;
+import org.example.services.LayerGroupService;
 import org.example.services.TiffTileService;
 import org.example.services.TileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 @RestController
@@ -17,12 +18,15 @@ public class ControllerREST {
     private final Boolean geoTiffMapSupported;
     private final TileService tileService;
     private final TiffTileService tiffTileService;
+    private final LayerGroupService layerGroupService;
+
     @Autowired
     public ControllerREST (@Value("${application.geofile.provided}") Boolean geoTiffMapSupported,
-                           TileService tileService, TiffTileService tiffTileService) {
+                           TileService tileService, TiffTileService tiffTileService, LayerGroupService layerGroupService) {
         this.geoTiffMapSupported = geoTiffMapSupported;
         this.tileService = tileService;
         this.tiffTileService = tiffTileService;
+        this.layerGroupService = layerGroupService;
     }
     private static final Logger log = Logger.getLogger(TileService.class.getName());
 
@@ -62,5 +66,28 @@ public class ControllerREST {
     public TiffMapState getTiffMapState() {
         log.info("<==>Frontend request for tiff map appearance state.");
         return new TiffMapState(geoTiffMapSupported);
+    }
+
+    @GetMapping(path = "getLayerGroups", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ArrayList<String> getLayerGroups() {
+        return layerGroupService.getGroupsNames();
+    }
+
+    @PostMapping(path = "saveLayerGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String saveLayerGroup(@RequestBody LayerGroup layerGroup) {
+        log.info("<---Layer group SAVE request, 'layer group':" + layerGroup.toString());
+        return layerGroupService.saveLayerGroup(layerGroup);
+    }
+
+    @PostMapping(path = "loadLayerGroup", consumes = MediaType.TEXT_HTML_VALUE)
+    public LayerGroup loadLayerGroup(@RequestBody String groupName) {
+        log.info("<---Layer group DOWNLOAD request, 'layer group name':" + groupName);
+        return layerGroupService.findLayerGroup(groupName);
+    }
+
+    @PostMapping(path = "deleteLayerGroup", consumes = MediaType.TEXT_HTML_VALUE)
+    public String deleteLayerGroup(@RequestBody String groupName) {
+        log.info("<---Layer group DELETE request, 'layer group name':" + groupName);
+        return layerGroupService.deleteLayerGroup(groupName);
     }
 }

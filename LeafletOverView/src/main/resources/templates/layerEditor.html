@@ -8,8 +8,9 @@
     <title>Layer Editor</title>
     <link rel="stylesheet" href="/leaflet.css"/>
     <script src="/leaflet-src.js"></script>
+    <script src="/editor-src.js"></script>
     <style>
-        a, strong, select, input {
+        a, strong, small, button, select, input, output {
             font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
             font-size: 14px;
         }
@@ -39,7 +40,6 @@
 
         .divSet {
             padding: 8px;
-            overflow: auto;
             display: none;
         }
 
@@ -58,18 +58,22 @@
             width: 100%;
             font-size: small;
             background-color: white;
-            color: #585858;
+            color: #000000;
             padding: 5px 5px 5px 5px;
             font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
         }
 
+        .divSettings {
+            overflow: auto;
+            display: none;
+        }
+
         .buttonAdd {
-            position: relative;
-            top: 20px;
-            height: 30px;
-            width: 100%;
+            height: 40px;
+            width: 95%;
             background-color: #bbffa9;
             border: 0;
+            cursor: pointer;
         }
 
         .buttonAdd:hover {
@@ -77,16 +81,29 @@
         }
 
         .buttonDel {
-            position: relative;
-            top: 150px;
-            height: 30px;
-            width: 100%;
+            height: 40px;
+            width: 95%;
             background-color: #f5bd83;
             border: 0;
+            cursor: pointer;
         }
 
         .buttonDel:hover {
             background-color: #d9a375;
+        }
+
+        .removeLayer {
+            background-color: #dddddd;
+            height: 40px;
+            width: 95%;
+            padding: 5px;
+            text-align: center;
+            display: flex;
+            cursor: pointer;
+        }
+
+        .removeLayer:hover {
+            background-color: #bebebe;
         }
 
         .iconBar {
@@ -105,22 +122,38 @@
             cursor: pointer;
         }
 
-        .icon {
+        .toolIcon {
             width: 44px;
             background-color: white;
         }
 
-        .icon:hover {
+        .toolIcon:hover {
+            background-color: #595959;
+        }
+
+        .markerIcon {
+            height: 40px;
+            background-color: white;
+        }
+
+        .markerIcon:hover {
             background-color: #595959;
         }
     </style>
 </head>
 <body style="background-color: #f5f5f5; margin: 0;">
-<div style=" display: flex; padding: 5px 10px 5px 10px;">
-    <div style="width: 100%; text-align: left;">
-        <a id="debugMsg"></a>
+<div style=" max-height: 50px; display: flex; padding: 5px 10px 5px 10px;">
+    <div style="width: 100%; text-align: left; display:flex;">
+        <div style="min-height: 40px; max-height: 40px; width: 160px; border: 1px solid #00007EFF; border-right: none;
+                    background-color: #dddddd; padding-top: 5px; text-align: center;">
+            <strong>DEBUG MSG:</strong><br><small>(for UX enhancement)</small>
+        </div>
+        <div style="min-height: 40px; max-height: 40px; min-width: 15px; max-width: 80%; border: 1px solid #00007e;
+                    padding-top: 5px; padding-left: 10px; padding-right: 10px; overflow: auto">
+            <a id="debugMsg">...</a>
+        </div>
     </div>
-    <div class="icon" style="width: 90px; padding: 5px 0 0 15px; border: 1px solid dimgray; border-radius: 15px;">
+    <div class="toolIcon" style="width: 90px; padding: 7px 0 0 15px; border: 1px solid dimgray; border-radius: 15px;">
         <a href="/"><img src="/images/layers/backTr.png" style="height: 30px;"></a>
     </div>
 </div>
@@ -128,67 +161,306 @@
     <div id="mapHolder" style="width: 100%; position: relative; right: 1px;">
         <div id="map" class="divMap"></div>
         <div class="iconBar">
-            <img id="i1" src="/images/layers/iconPointTr.png" class="icon" onclick="onClickMarkerIcon()">
-            <img id="i2" src="/images/layers/iconPLineTr.png" class="icon" onclick="onClickPLine()">
-            <img id="i3" src="/images/layers/iconMRecTr.png" class="icon" onclick="onClickPolygonIcon()">
-            <img id="i4" src="/images/layers/iconRecTr.png" class="icon" onclick="onClickRectIcon()">
-            <img id="i5" src="/images/layers/iconCircTr.png" class="icon" onclick="onClickCircleIcon()">
-            <img id="i6" src="/images/layers/iconHandTr.png" class="icon"
+            <img id="i1" src="/images/layers/iconPointTr.png" class="toolIcon" onclick="onClickMarkerIcon()">
+            <img id="i2" src="/images/layers/iconPLineTr.png" class="toolIcon" onclick="onClickPLine()">
+            <img id="i3" src="/images/layers/iconMRecTr.png" class="toolIcon" onclick="onClickPolygonIcon()">
+            <img id="i4" src="/images/layers/iconRecTr.png" class="toolIcon" onclick="onClickRectIcon()">
+            <img id="i5" src="/images/layers/iconCircTr.png" class="toolIcon" onclick="onClickCircleIcon()">
+            <img id="i6" src="/images/layers/iconHandTr.png" class="toolIcon"
                  style="background-color: #bbffa9;" onclick="onClickBrowsIcon()">
-            <img id="i7" src="/images/layers/iconArrTr.png" class="icon" onclick="onClickArrowIcon()">
-            <img id="i8" src="/images/layers/iconRecSelTr.png" class="icon">
+            <img id="i7" src="/images/layers/iconArrTr.png" class="toolIcon" onclick="onClickArrowIcon()">
+            <img id="i8" src="/images/layers/iconRecSelTr.png" class="toolIcon" onclick="onClickRectSelIcon()">
         </div>
     </div>
-    <div style="width: 350px; background-color: #f5f5f5; border-top: 1px solid dimgray;
-    border-bottom: 1px solid dimgray; position: relative;">
-        <div class="divButton" style="border-top: 0;" onclick="onClickDivAdd()">
-            ADD new layer group
+    <div style="max-width: 300px; min-width: 300px; background-color: #f5f5f5; border-top: 1px solid dimgray;
+    border-bottom: 1px solid dimgray;">
+        <div class="divButton" style="border-top: 0;" onclick="onClickAddDel()">
+            LAYER GROUPs ops in EDITOR
         </div>
         <div id="divSet_1" class="divSet">
             <div class="divMsg">
                 <div id="addMsgColor" class="divMsgColor"></div>
-                <div id="addMsgText" class="divMsgText">
-                    Enter name of new layer group and press ADD
+                <div id="addMsgText" class="divMsgText"></div>
+            </div>
+            <div id="divSet_1_scroll">
+                <br>
+                <a><strong>Enter layer group name to create:</strong></a>
+                <input id="addField" style="height: 20px;" size="30" maxlength="30">
+                <br><br>
+                <a><strong>Existing layer groups:</strong></a>
+                <div id="existingList">
+                    <div></div>
                 </div>
+                <br>
+                <button class="buttonAdd" onclick="onClickLayerGrAdd()">CREATE layer group</button>
+                <br><br>
+                <a><strong>Choose layer group to delete:</strong></a><br>
+                <div class="layerSelection">
+                    <select id="existedLGroupsSelector0">
+                    </select>
+                </div>
+                <br>
+                <button class="buttonDel" onclick="onClickLayerGrDel()">DELETE layer group</button>
+                <br><br>
             </div>
-            <br>
-            <a><strong>Enter layer group name:</strong></a>
-            <input id="addField" style="height: 30px;" size="24" maxlength="22">
-            <br><br>
-            <a><strong>Existing layer groups:</strong></a>
-            <div id="existingList">
-                <div></div>
-            </div>
-            <br><br>
-            <button class="buttonAdd" onclick="onClickLayerGrAdd()">ADD</button>
         </div>
-        <div class="divButton" onclick="onClickDivDel()">
-            DELETE layer group
+        <div class="divButton" onclick="onClickLoadSave()">
+            LAYER GROUPs ops in DATABASE
         </div>
         <div id="divSet_3" class="divSet">
             <div class="divMsg">
                 <div class="divMsgColor"></div>
-                <div class="divMsgText">
-                    Select layer group to delete and press DELETE
+                <div id="bdMsgText" class="divMsgText">
+                    Choose layer group and relevant operation. To browse current layer groups use icon -
+                    <img src="/images/layers.png" width=16px>
                 </div>
             </div>
-            <br>
-            <a><strong>Choose layer group name:</strong></a><br>
-            <div id="divSelection">
-                <select id="removeSelection" style="height: 30px; width: 180px;">
-                </select>
+            <div id="divSet_3_scroll">
+                <br>
+                <a><strong>Select layer group to SAVE in database</strong>:</a>
+                <div class="layerSelection">
+                    <select id="existedLGroupsSelector1">
+                    </select>
+                </div>
+                <br>
+                <button class="buttonAdd" onclick="saveGroupToDB()">
+                    SAVE/REPLACE<br> layer group in DB
+                </button>
+                <br><br>
+                <div style="border: 1px solid black; padding: 5px;">
+                    <a><strong>Select layer group to DOWNLOAD <br>or REMOVE from database</strong>:</a>
+                    <div id="savedGroups">
+                        <select id="savedGroupSelection">
+                        </select>
+                    </div>
+                    <br>
+                    <button class="buttonAdd" onclick="loadGroupFromDB()">
+                        DOWNLOAD<br>layer group from DB
+                    </button>
+                    <br>
+                    <br>
+                    <button class="buttonDel" onclick="deleteGroupFromDB()">
+                        REMOVE<br>layer group from DB
+                    </button>
+                    <br><br>
+                </div>
+                <br>
             </div>
-            <br><br><br>
-            <button class="buttonDel" onclick="onClickLayerGrDel()">DELETE</button>
         </div>
         <div class="divButton" onclick="onClickDivEdit()">
-            EDIT layer elements
+            ops with LAYERS
         </div>
         <div id="divSet_4" class="divSet" style="display: block">
             <div class="divMsg">
                 <div class="divMsgColor"></div>
-                <div class="divMsgText">
-                    Click and drag to select features.
+                <div id="editMsgText" class="divMsgText">
+                    To place a <strong>LAYER</strong>, select it from the menu on the left.
+                    To browse current <strong>LAYER GROUPS</strong> use icon -
+                    <img src="/images/layers.png" width=16px>
+                </div>
+            </div>
+            <div id="divSet_4_scroll">
+                <div id="markerSettings" class="divSettings">
+                    <br>
+                    <div class="removeLayer" onclick="removeFromMap()">
+                        <div style="margin: auto; width: 40px;">
+                            <img src="/images/layers/garbageTr.png" style="height: 30px;">
+                        </div>
+                        <div style="margin: auto; width: 100%; text-align: left;">
+                            <a style="color: #DD0003"> remove <strong class="garbageCounter">0</strong> layer from
+                                map</a>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Change marker symbol</strong>:</a>
+                    <div style="display: flex; border: 1px solid black; background-color: white;
+                    width: 95%; padding: 5px; cursor: pointer;">
+                        <img id="marker0" src="/images/marker-icon.png" class="markerIcon"
+                             onclick="mIconShifter(0)">
+                        <img id="marker1" src="/images/layers/markers/1Tr.png" class="markerIcon"
+                             onclick="mIconShifter(1)">
+                        <img id="marker2" src="/images/layers/markers/2Tr.png" class="markerIcon"
+                             onclick="mIconShifter(2)">
+                        <img id="marker3" src="/images/layers/markers/3Tr.png" class="markerIcon"
+                             onclick="mIconShifter(3)">
+                        <img id="marker4" src="/images/layers/markers/4Tr.png" class="markerIcon"
+                             onclick="mIconShifter(4)">
+                        <img id="marker5" src="/images/layers/markers/5Tr.png" class="markerIcon"
+                             onclick="mIconShifter(5)">
+                        <img id="marker6" src="/images/layers/markers/6Tr.png" class="markerIcon"
+                             onclick="mIconShifter(6)">
+                        <img id="marker7" src="/images/layers/markers/7Tr.png" class="markerIcon"
+                             onclick="mIconShifter(7)">
+                    </div>
+                    <br>
+                    <a><strong>Size of marker</strong><small>(% of default value)</small>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto; padding-top: 5px;">
+                            <input id="mSizeInput" style="width: 90%;" type="range" min="50" max="150"
+                                   value="100" oninput="mSizeOutput.value = this.value + '%';
+                                                        changeSelectedMarkers('changeSize');">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="mSizeOutput">100%</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Tooltip </strong><small>(small texts on top of layer)</small>:</a>
+                    <input id="mToolTipInput" style="height: 20px;" size="30" maxlength="28"
+                           oninput="changeSelectedMarkers('changeTooltip');">
+                    <br><br>
+                    <div style="border: 1px solid black; padding: 5px;">
+                        <a><strong>Choose from existing layer groups</strong>:</a>
+                        <div class="layerSelection">
+                            <select id="existedLGroupsSelector2">
+                            </select>
+                        </div>
+                        <br>
+                        <button class="buttonAdd" onclick="onClickToLGroupAdd(2)">
+                            ADD layer(s) to layer group
+                        </button>
+                        <br><br>
+                        <a><strong>Choose parent layer group</strong>:</a>
+                        <div class="ownerSelection">
+                            <select id="ownerSelector0">
+                            </select>
+                        </div>
+                        <br>
+                        <button class="buttonDel" onclick="onClickFromOwnerDel(0)">
+                            DELETE<br> layer(s) from layer group
+                        </button>
+                        <br><br>
+                    </div>
+                    <br>
+                </div>
+                <div id="vectorSettings" class="divSettings">
+                    <br>
+                    <div class="removeLayer" onclick="removeFromMap()">
+                        <div style="margin: auto; width: 40px;">
+                            <img src="/images/layers/garbageTr.png" style="height: 30px;">
+                        </div>
+                        <div style="margin: auto; width: 100%; text-align: left;">
+                            <a style="color: #DD0003"> remove <strong class="garbageCounter">0</strong> layer from
+                                map</a>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Stroke (border) width in pixels</strong>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto; padding-top: 5px;">
+                            <input id="borderWeight" style="width: 90%;" type="range" min="1" max="10"
+                                   value="1" oninput="bWeightOutput.value = this.value + 'px.';
+                                             changeSelectedVectors('changeWeight')">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="bWeightOutput">1px.</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Stroke (border) opacity</strong>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto; padding-top: 5px;">
+                            <input id="borderOpacity" style="width: 90%;" type="range" min="1" max="100"
+                                   value="100" oninput="bOpacityOutput.value = this.value + '%';
+                                             changeSelectedVectors('changeOpacity')">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="bOpacityOutput">100%</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Stroke (border) color</strong>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto;">
+                            <input id="borderColor" style="width: 70%;" type="color" value="#000000"
+                                   oninput="bColorOutput.value = this.value;
+                                   changeSelectedVectors('changeColor')">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="bColorOutput">#000000</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Fill opacity </strong><small>(not for PolyLines)</small>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto; padding-top: 5px;">
+                            <input id="fillOpacity" style="width: 90%;" type="range" min="1" max="100"
+                                   value="20" oninput="fOpacityOutput.value = this.value + '%';
+                                              changeSelectedVectors('changeFillOpacity')">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="fOpacityOutput">20%</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Fill color</strong><small>(not for PolyLines)</small>:</a>
+                    <div style="display: flex; padding-right: 10px;">
+                        <div style="width: 100%; margin: auto;">
+                            <input id="fillColor" style="width: 70%;" type="color" value="#1e41da"
+                                   oninput="fColorOutput.value = this.value;
+                                   changeSelectedVectors('changeFillColor')">
+                        </div>
+                        <div style="margin: auto; border: 1px solid black; width:80px; padding: 5px;
+                        text-align: center;">
+                            <output style="font-weight: bold;" id="fColorOutput">#1e41da</output>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>Tooltip </strong><small>(small texts on top of layer)</small>:</a>
+                    <input id="vToolTip" style="height: 20px;" size="30" maxlength="28"
+                           oninput="changeSelectedVectors('changeTooltip');">
+                    <br><br>
+                    <div style="border: 1px solid black; padding: 5px;">
+                        <a><strong>Choose from existing layer groups</strong>:</a>
+                        <div class="layerSelection">
+                            <select id="existedLGroupsSelector3">
+                            </select>
+                        </div>
+                        <br>
+                        <button class="buttonAdd" onclick="onClickToLGroupAdd(3)">
+                            ADD layer(s) to layer group
+                        </button>
+                        <br><br>
+                        <a><strong>Choose parent layer group</strong>:</a>
+                        <div class="ownerSelection">
+                            <select id="ownerSelector1">
+                            </select>
+                        </div>
+                        <br>
+                        <button class="buttonDel" onclick="onClickFromOwnerDel(1)">
+                            DELETE layer(s) from layer group
+                        </button>
+                        <br><br>
+                    </div>
+                    <br>
+                </div>
+                <div id="groupSelection" class="divSettings">
+                    <br>
+                    <div class="removeLayer" onclick="removeFromMap()">
+                        <div style="margin: auto; width: 40px;">
+                            <img src="/images/layers/garbageTr.png" style="height: 30px;">
+                        </div>
+                        <div style="margin: auto; width: 100%; text-align: left;">
+                            <a style="color: #DD0003"> remove <strong class="garbageCounter">0</strong> layer from
+                                map</a>
+                        </div>
+                    </div>
+                    <br>
+                    <a><strong>To add layers to a group, select one of the existing layer groups</strong>:</a>
+                    <div class="layerSelection">
+                        <select id="existedLGroupsSelector4">
+                        </select>
+                    </div>
+                    <br>
+                    <button class="buttonAdd" onclick="onClickToLGroupAdd(4)">
+                        ADD layer(s) to layer group
+                    </button>
+                    <br>
                 </div>
             </div>
         </div>
@@ -203,21 +475,36 @@
     document.getElementById("map").setAttribute("style", "height: " + mapHeight + "px;");
     document.getElementById("divSet_4").setAttribute("style", "display: block; height: "
         + (mapHeight - 139) + "px;");
+    document.getElementById("divSet_4_scroll").setAttribute("style", "overflow: auto; height: "
+        + (mapHeight - 130 - document.getElementById("editMsgText").clientHeight) + "px");
 
-    let editableLayer;
+
+    let editableLayers = [];
+    let layersPoints = [];
+    let temporaryLayers = [];
+    let tempLayersPoints = [];
     let editMode = false;
-    let shapePoints = [];
+    let markerIconUrl = "/images/marker-icon-2x.png";
 
-    const bigPointIcon = L.icon({
-        iconUrl: '/images/layers/markers/bigPointTr.png',
+    const drawPointIcon = L.icon({
+        iconUrl: '/images/layers/markers/drawPointTr.png',
         iconSize: [15, 15],
         iconAnchor: [7, 7]
     });
-
-    const moveCrossIcon = L.icon({
-        iconUrl: '/images/layers/markers/moveCrossTr.png',
+    const editPointIcon = L.icon({
+        iconUrl: '/images/layers/markers/editPointTr.png',
+        iconSize: [15, 15],
+        iconAnchor: [7, 7]
+    });
+    const editCrossIcon = L.icon({
+        iconUrl: '/images/layers/markers/editCrossTr.png',
         iconSize: [25, 25],
         iconAnchor: [13, 13]
+    });
+    const selectionCrossIcon = L.icon({
+        iconUrl: '/images/layers/markers/selectionCrossTr.png',
+        iconSize: [35, 35],
+        iconAnchor: [18, 18]
     });
 
     const map = L.map('map').setView([47.160005, 37.530743], 11);
@@ -232,7 +519,12 @@
         'contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
     const mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}' +
         '?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-    const streets = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+    const streets = L.tileLayer(mbUrl, {
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        attribution: mbAttr
+    });
     const satellite = L.tileLayer(mbUrl, {
         id: 'mapbox/satellite-v9',
         tileSize: 512,
@@ -240,517 +532,31 @@
         attribution: mbAttr
     });
 
-    const cities = L.layerGroup();
-    L.marker([47.204712, 37.315195]).bindPopup('Population: 1.9 thousands.').addTo(cities);
-    L.marker([47.174881, 37.687208]).bindPopup('Population: 10.3 thousands.').addTo(cities);
-    L.marker([47.10, 37.558]).bindPopup('Population: 425 thousands.').addTo(cities);
+    let cities = L.layerGroup();
+    L.marker([47.204712, 37.315195]).setIcon(adjustedIcon(markerIconUrl, false))
+        .bindPopup('Population: 1.9 thousands.').addTo(cities);
+    L.marker([47.174881, 37.687208]).setIcon(adjustedIcon(markerIconUrl, false))
+        .bindPopup('Population: 10.3 thousands.').addTo(cities);
+    L.marker([47.10, 37.558]).setIcon(adjustedIcon(markerIconUrl, false))
+        .bindPopup('Population: 425 thousands.').addTo(cities);
 
-    let baseLayers = {
+    const baseLayers = {
         'OpenStreetMap': osm,
         'Streets': streets,
         'Satellite': satellite
     };
-    let userLayers = {
-        'Example of layer': cities
+    let userLayerGroups = {
+        'Layer group example': cities
     };
 
-    let layerControl = L.control.layers(baseLayers, userLayers);
+    let layerControl = L.control.layers(baseLayers, userLayerGroups);
     layerControl.addTo(map);
     layerControl.getContainer().addEventListener('mouseout', function () {
-        shapePointsCleaner();
+        layersPointsCleaner();
         if (editMode) {
             onClickArrowIcon();
         }
     });
-
-    //--Icon MENU functions:
-    function onClickMarkerIcon() {
-        iconMenuShifter();
-        document.getElementById("i1").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "crosshair";
-        map.on('click', function (ev) {
-            setEditableMarker();
-            editableLayer.setLatLng(ev.latlng);
-            editableLayer.addTo(map);
-        });
-    }
-
-    function onClickPLine() {
-        iconMenuShifter();
-        document.getElementById("i2").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "crosshair";
-        setEditablePLine();
-        polyCreator();
-    }
-
-    function onClickPolygonIcon() {
-        iconMenuShifter();
-        document.getElementById("i3").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "crosshair";
-        setEditablePolygon();
-        polyCreator();
-    }
-
-    function onClickRectIcon() {
-        iconMenuShifter();
-        document.getElementById("i4").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "crosshair";
-        setEditableRect();
-        rectangleCreator();
-    }
-
-    function onClickCircleIcon() {
-        iconMenuShifter();
-        document.getElementById("i5").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "crosshair";
-        setEditableCircle();
-        circleCreator();
-    }
-
-    function onClickBrowsIcon() {
-        iconMenuShifter();
-        document.getElementById("i6").setAttribute("style", "background-color: #bbffa9;");
-        document.getElementById("map").style.cursor = "grab";
-    }
-
-    function onClickArrowIcon() {
-        iconMenuShifter();
-        editMode = true;
-        document.getElementById("i7").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "context-menu";
-        document.getElementById("debugMsg").innerHTML = "EditMode: " + editMode + "; Layers: ";
-        map.eachLayer(function (layer) {
-            document.getElementById("debugMsg").innerHTML += ((layer instanceof L.Marker) ? "Marker; " :
-                (layer instanceof L.Rectangle) ? "Rectangle; " :
-                    (layer instanceof L.Circle) ? "Circle; " :
-                        (layer instanceof L.Polygon) ? "Polygon; " :
-                            (layer instanceof L.Polyline) ? "Polyline; " : "<strong>N/d</strong>" + "; ");
-            switch (true) {
-                case layer instanceof L.Marker:
-                    layer.on('click', function () {
-                        shapePointsCleaner();
-                        markerEditor(layer);
-                    });
-                    break;
-                case layer instanceof L.Rectangle:
-                    layer.on('click', function () {
-                        shapePointsCleaner();
-                        rectangleEditor(layer);
-                    });
-                    break;
-                case layer instanceof L.Circle:
-                    layer.on('click', function () {
-                        shapePointsCleaner();
-                        circleEditor(layer);
-                    });
-                    break;
-                case layer instanceof L.Polyline:
-                    layer.on('click', function () {
-                        shapePointsCleaner();
-                        polyEditor(layer);
-                    });
-            }
-        });
-    }
-
-    function onClickRectSelIcon() {
-        iconMenuShifter();
-        document.getElementById("i8").setAttribute("style", "background-color: #f5bd83;");
-        document.getElementById("map").style.cursor = "context-menu";
-        setEditableRectSel();
-        rectangleSelector();
-    }
-
-    function polyCreator() {
-        map.off('click mousemove contextmenu');
-        map.on('click', function (ev1) {
-            shapePointsCleaner();
-            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
-            shapePoints.push(point1);
-            let polygonsArray = editableLayer.getLatLngs();
-            let polygonPointsLatLng = polygonsArray[0];
-            polygonPointsLatLng[0] = ev1.latlng;
-            editableLayer.setLatLngs(polygonsArray).addTo(map);
-            let cornerIndex = 1;
-            map.on('contextmenu', function (evx) {
-                if (cornerIndex === 1) {
-                    editableLayer.remove();
-                } else {
-                    if (!polygonPointsLatLng[cornerIndex - 1].equals(evx.latlng)) polygonPointsLatLng.pop();
-                    editableLayer.setLatLngs(polygonsArray);
-                }
-                if (editableLayer instanceof L.Polygon) {
-                    setEditablePolygon();
-                } else {
-                    setEditablePLine();
-                }
-                polyCreator();
-            });
-            map.on('mousemove', function (ev) {
-                polygonPointsLatLng[cornerIndex] = ev.latlng;
-                editableLayer.setLatLngs(polygonsArray);
-            });
-            map.off('click');
-            map.on('click', function (ev2) {
-                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
-                shapePoints.push(point2);
-                polygonPointsLatLng[cornerIndex++] = ev2.latlng;
-                editableLayer.setLatLngs(polygonsArray);
-            });
-        });
-    }
-
-    function rectangleCreator() {
-        map.off('click mousemove contextmenu');
-        map.on('click', function (ev1) {
-            shapePointsCleaner();
-            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
-            shapePoints.push(point1);
-            editableLayer.addTo(map);
-            map.on('contextmenu', function () {
-                shapePointsCleaner();
-                editableLayer.remove();
-                rectangleCreator();
-            });
-            map.on('mousemove', function (ev) {
-                editableLayer.setBounds([shapePoints[0].getLatLng(), ev.latlng]);
-            });
-            map.off('click');
-            map.on('click', function (ev2) {
-                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
-                shapePoints.push(point2);
-                editableLayer.setBounds([shapePoints[0].getLatLng(), shapePoints[1].getLatLng()]);
-                setEditableRect();
-                rectangleCreator();
-            });
-        });
-    }
-
-    function circleCreator() {
-        map.off('click mousemove contextmenu');
-        map.on('click', function (ev1) {
-            shapePointsCleaner();
-            let point1 = L.marker(ev1.latlng, {icon: bigPointIcon});
-            shapePoints.push(point1);
-            editableLayer.setLatLng(ev1.latlng);
-            editableLayer.addTo(map);
-            map.on('contextmenu', function () {
-                shapePointsCleaner();
-                editableLayer.remove();
-                circleCreator();
-            });
-            map.on('mousemove', function (ev) {
-                editableLayer.setRadius(point1.getLatLng().distanceTo(ev.latlng));
-            });
-            map.off('click');
-            map.on('click', function (ev2) {
-                let point2 = L.marker(ev2.latlng, {icon: bigPointIcon});
-                shapePoints.push(point2);
-                editableLayer.setRadius(point1.getLatLng().distanceTo(ev2.latlng));
-                setEditableCircle();
-                circleCreator();
-            });
-        });
-    }
-
-    //--Shapes editors:
-    function markerEditor(marker) {
-        editableLayer = marker;
-        let bigPointLayer = L.marker(marker.getLatLng(), {icon: bigPointIcon});
-        bigPointLayer.setZIndexOffset(500);
-        bigPointLayer.addTo(map);
-        bigPointLayer.getElement().style.cursor = "all-scroll";
-        shapePoints.push(bigPointLayer);
-        bigPointLayer.dragging.enable();
-        bigPointLayer.on('drag', function () {
-            marker.setLatLng(bigPointLayer.getLatLng());
-        });
-    }
-
-    function polyEditor(polyLayer) {
-        editableLayer = polyLayer;
-        let centerLatLng = getLayerCenter(editableLayer);
-        let center = L.marker(centerLatLng, {icon: moveCrossIcon});
-        center.setZIndexOffset(500);
-        center.setOpacity(1);
-        center.addTo(map);
-        center.getElement().style.cursor = "all-scroll";
-        shapePoints.push(center);
-        let centerLat = shapePoints[0].getLatLng().lat;
-        let centerLng = shapePoints[0].getLatLng().lng;
-        let linesArray = polyLayer.getLatLngs();
-        let linePointsLatLng = linesArray[0];
-        linePointsLatLng.forEach(function (pointLatLng) {
-            let point = L.marker(pointLatLng, {icon: bigPointIcon});
-            point.setZIndexOffset(500);
-            point.addTo(map);
-            point.getElement().style.cursor = "all-scroll";
-            shapePoints.push(point);
-            point.dragging.enable();
-            point.on('drag', function (ev) {
-                let pointIndex = shapePoints.indexOf(point);
-                linePointsLatLng[pointIndex - 1] = ev.latlng;
-                editableLayer.setLatLngs(linesArray);
-                shapePoints[0].setLatLng(editableLayer.getCenter());
-            });
-        });
-        shapePoints[0].dragging.enable();
-        shapePoints[0].on('drag', function (ev) {
-            let deltaLat = ev.latlng.lat - centerLat;
-            let deltaLng = ev.latlng.lng - centerLng;
-            for (let i = 0; i < linePointsLatLng.length; i++) {
-                linePointsLatLng[i] = L.latLng(linePointsLatLng[i].lat + deltaLat, linePointsLatLng[i].lng + deltaLng);
-                shapePoints[i + 1].setLatLng(linePointsLatLng[i]);
-            }
-            editableLayer.setLatLngs(linesArray);
-            centerLat = shapePoints[0].getLatLng().lat;
-            centerLng = shapePoints[0].getLatLng().lng;
-        });
-    }
-
-    function rectangleEditor(rect) {
-        editableLayer = rect;
-        let center = L.marker(rect.getCenter(), {icon: moveCrossIcon});
-        center.setZIndexOffset(500);
-        center.setOpacity(1);
-        center.addTo(map);
-        center.getElement().style.cursor = "all-scroll";
-        shapePoints.push(center);
-        let points = rect.getLatLngs();
-        let point1 = L.marker(points[0][0], {icon: bigPointIcon});
-        point1.setZIndexOffset(500);
-        point1.addTo(map);
-        point1.getElement().style.cursor = "ne-resize";
-        shapePoints.push(point1);
-        let point2 = L.marker(points[0][2], {icon: bigPointIcon});
-        point2.setZIndexOffset(500);
-        point2.addTo(map);
-        point2.getElement().style.cursor = "ne-resize";
-        shapePoints.push(point2);
-        point1.dragging.enable();
-        point1.on('drag', function () {
-            editableLayer.setBounds([shapePoints[1].getLatLng(), shapePoints[2].getLatLng()]);
-            center.setLatLng(editableLayer.getCenter());
-        });
-        point2.dragging.enable();
-        point2.on('drag', function () {
-            editableLayer.setBounds([shapePoints[1].getLatLng(), shapePoints[2].getLatLng()]);
-            center.setLatLng(editableLayer.getCenter());
-        });
-        center.dragging.enable();
-        center.on('drag', function () {
-            let recLat = shapePoints[2].getLatLng().lat - shapePoints[1].getLatLng().lat;
-            let recLng = shapePoints[2].getLatLng().lng - shapePoints[1].getLatLng().lng;
-            let centerLat = shapePoints[0].getLatLng().lat;
-            let centerLng = shapePoints[0].getLatLng().lng;
-            let point1Lat = (centerLat - recLat / 2);
-            let point1Lng = (centerLng - recLng / 2);
-            let point2Lat = (centerLat + recLat / 2);
-            let point2Lng = (centerLng + recLng / 2);
-            editableLayer.setBounds(L.latLngBounds(L.latLng(point1Lat, point1Lng),
-                L.latLng(point2Lat, point2Lng)));
-            point1.setLatLng(editableLayer.getLatLngs()[0][0]);
-            point2.setLatLng(editableLayer.getLatLngs()[0][2]);
-        });
-    }
-
-    function circleEditor(circle) {
-        editableLayer = circle;
-        let center = L.marker(circle.getLatLng(), {icon: moveCrossIcon});
-        center.setZIndexOffset(500);
-        center.setOpacity(1);
-        center.addTo(map);
-        center.getElement().style.cursor = "all-scroll";
-        shapePoints.push(center);
-        let point1 = L.marker(L.latLng(circle.getBounds().getSouth(), circle.getLatLng().lng), {icon: bigPointIcon});
-        point1.setZIndexOffset(500);
-        point1.addTo(map);
-        point1.getElement().style.cursor = "ns-resize";
-        shapePoints.push(point1);
-        point1.dragging.enable();
-        point1.on('drag', function () {
-            editableLayer.setRadius(center.getLatLng().distanceTo(point1.getLatLng()));
-        });
-        center.dragging.enable();
-        center.on('drag', function () {
-            editableLayer.setLatLng(center.getLatLng());
-            point1.setLatLng(L.latLng(editableLayer.getBounds().getSouth(), editableLayer.getLatLng().lng));
-        });
-    }
-
-    // TODO: redo functions to get settings from menu tools
-    function setEditableMarker() {
-        var myIcon = L.icon({
-            iconUrl: '/images/layers/markers/1Tr.png',
-            iconSize: [31, 41],
-            iconAnchor: [16, 41],
-            popupAnchor: [1, -34],
-            shadowUrl: '/images/marker-shadow.png',
-            shadowSize: [68, 95],
-            shadowAnchor: [22, 94]
-        });
-        editableLayer = L.marker(map.getCenter(), {icon: myIcon}).bindTooltip("new Marker");
-    }
-
-    function setEditablePLine() {
-        let points = [];
-        points[0] = []
-        points[0][0] = map.getCenter();
-        editableLayer = L.polyline(points, {color: "#b81eda", weight: 3});
-    }
-
-    function setEditablePolygon() {
-        let points = [];
-        points[0] = []
-        points[0][0] = map.getCenter();
-        editableLayer = L.polygon(points, {color: "#32c41b", weight: 1});
-    }
-
-    function setEditableRect() {
-        editableLayer = L.rectangle(L.latLngBounds(map.getCenter(), map.getCenter()), {color: "#1e41da", weight: 1});
-    }
-
-    function setEditableCircle() {
-        editableLayer = L.circle(map.getCenter(), {radius: 0, color: "#fd1500", weight: 1});
-    }
-
-    //--MENU functions:
-    //-----ADD layer group functions:
-    function onClickDivAdd() {
-        document.getElementById("addMsgColor").setAttribute("style", "background-color: #5b5be0;");
-        document.getElementById("addMsgText").innerText = "Enter name of new layer group and press ADD";
-        document.getElementById("divSet_1").setAttribute("style", "display: block; height: "
-            + (mapHeight - 139) + "px;");
-        document.getElementById("divSet_3").setAttribute("style", "display: none;");
-        document.getElementById("divSet_4").setAttribute("style", "display: none;");
-        layerGrDivRefresh();
-    }
-
-    function onClickLayerGrAdd() {
-        const newLGroupName = document.getElementById("addField").value;
-        var duplicate = false;
-        for (let layerName in userLayers) {
-            if (layerName === newLGroupName) duplicate = true;
-        }
-        if (!duplicate && newLGroupName !== "") {
-            document.getElementById("addField").value = "";
-            userLayers[newLGroupName] = L.layerGroup();
-            controlPaneRefresh();
-            document.getElementById("addMsgColor").setAttribute("style", "background-color: #5b5be0;");
-            document.getElementById("addMsgText").innerText = "Enter name of new layer group and press ADD";
-            layerGrDivRefresh();
-        } else {
-            document.getElementById("addMsgColor").setAttribute("style", "background-color: red;");
-            document.getElementById("addMsgText").innerText = "Layer group name is NULL or already EXISTS";
-        }
-    }
-
-    //--DELETE layer group functions:
-    function onClickDivDel() {
-        document.getElementById("divSet_1").setAttribute("style", "display: none;");
-        document.getElementById("divSet_3").setAttribute("style", "display: block; height: "
-            + (mapHeight - 139) + "px;");
-        document.getElementById("divSet_4").setAttribute("style", "display: none;");
-        layerGrSelRefresh();
-    }
-
-    function onClickLayerGrDel() {
-        const forDelLGroupName = document.getElementById("removeSelection").value;
-        delete userLayers[forDelLGroupName];
-        controlPaneRefresh();
-        layerGrSelRefresh();
-    }
-
-    //--EDIT layer group functions:
-    function onClickDivEdit() {
-        document.getElementById("divSet_1").setAttribute("style", "display: none;");
-        document.getElementById("divSet_3").setAttribute("style", "display: none;");
-        document.getElementById("divSet_4").setAttribute("style", "display: block; height: "
-            + (mapHeight - 139) + "px;");
-    }
-
-    //--Auxiliary functions:
-    function getLayerCenter(polyLayer) {
-        let centerLatLng = polyLayer.getCenter();
-        let pLayerBounds = polyLayer.getBounds();
-        if (!pLayerBounds.contains(centerLatLng)) {
-            centerLatLng = L.latLng((pLayerBounds.getNorth() + pLayerBounds.getSouth()) / 2,
-                (pLayerBounds.getEast() + pLayerBounds.getWest()) / 2);
-        }
-        return centerLatLng;
-    }
-
-    function layerGrDivRefresh() {
-        document.getElementById("existingList").getElementsByTagName("div")[0].remove();
-        const newDivList = document.createElement("div");
-        newDivList.setAttribute("style", "width: 95%; height: 105px; background-color: white; " +
-            "border: 1px solid gray; padding: 0 0 0 3px; overflow: auto");
-        var str = document.createElement("strong");
-        str.innerText = "User layers:";
-        newDivList.appendChild(str);
-        newDivList.appendChild(document.createElement("br"));
-        for (let layerName in userLayers) {
-            let a = document.createElement("a");
-            a.innerText = layerName;
-            newDivList.appendChild(a);
-            newDivList.appendChild(document.createElement("br"));
-        }
-        newDivList.appendChild(document.createElement("br"));
-        str = document.createElement("strong");
-        str.innerText = "Base map layers:";
-        newDivList.appendChild(str);
-        newDivList.appendChild(document.createElement("br"));
-        for (let layerName in baseLayers) {
-            let a = document.createElement("a");
-            a.innerText = layerName;
-            newDivList.appendChild(a);
-            newDivList.appendChild(document.createElement("br"));
-        }
-        document.getElementById("existingList").appendChild(newDivList);
-    }
-
-    function layerGrSelRefresh() {
-        document.getElementById("divSelection").getElementsByTagName("select")[0].remove();
-        const newSelection = document.createElement("select");
-        newSelection.setAttribute("id", "removeSelection");
-        newSelection.setAttribute("style", "height: 30px; width: 180px;");
-        document.getElementById("divSelection").appendChild(newSelection);
-        for (let layerName in userLayers) {
-            var layerOption = document.createElement("option");
-            layerOption.setAttribute("value", layerName);
-            layerOption.innerText = layerName;
-            document.getElementById("removeSelection").appendChild(layerOption)
-        }
-    }
-
-    function shapePointsCleaner() {
-        while (shapePoints.length !== 0) {
-            let point = shapePoints.shift();
-            point.remove();
-        }
-    }
-
-    //TODO:
-    function iconMenuShifter() {
-        for (let i = 1; i < 9; i++) document.getElementById("i" + i).removeAttribute("style");
-        map.off('click mousemove contextmenu');
-        shapePointsCleaner();
-        editMode = false;
-        map.eachLayer(function (layer) {
-            if (layer instanceof L.Marker) layer.off('click');
-            if (layer instanceof L.Polyline) layer.off('click');
-            if (layer instanceof L.Circle) layer.off('click');
-        });
-    }
-
-    function controlPaneRefresh() {
-        layerControl.remove();
-        layerControl = L.control.layers(baseLayers, userLayers);
-        layerControl.addTo(map);
-        layerControl.getContainer().addEventListener('mousedown', function () {
-            shapePointsCleaner();
-        }, true);
-    }
 </script>
 </body>
 </html>

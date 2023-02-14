@@ -1,6 +1,7 @@
 package org.example.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 @Entity
 @Table(name = "tiles")
 @IdClass(TileCompKey.class)
+@NoArgsConstructor
 public class Tile {
     @Id
     @Column(name = "z")
@@ -28,9 +30,6 @@ public class Tile {
 
     @Column(name = "addingtime", length = 50)
     private String addingTime;
-
-    public Tile() {
-    }
 
     public Tile(int z, int x, int y, byte[] tileByteArray,
                 String source, String addingTime) {

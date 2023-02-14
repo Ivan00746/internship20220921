@@ -103,6 +103,14 @@ This may cause application speed issues. In this case, it is possible to disable
 other app properties, including tile source server, input/output files and folders, coordinate system 
 corrections, which allow to precisely match geoTiff map to OpenStreetMap.  
 
+To get know about capabilities of combining different layers with a digital map surface click on the image:
+
+<img src="./LeafletOverView/src/main/resources/static/images/layers/layerImgLowRes.png" width="90px">
+
+This simple layer editor implementation reveals ways to add different type layers to a map (for further
+using in versatile business processes), storing and retrieve them with a database. 
+
+
 ### Resources:
 
 * [Leaflet open-source JavaScript library](https://leafletjs.com/)
